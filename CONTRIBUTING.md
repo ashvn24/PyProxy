@@ -15,8 +15,8 @@ guidelines and instructions for contributing.
 1. **Fork and clone** the repository:
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/pyproxy.git
-   cd pyproxy
+   git clone https://github.com/YOUR_USERNAME/PyProxy.git
+   cd PyProxy
    ```
 
 2. **Create a virtual environment**:

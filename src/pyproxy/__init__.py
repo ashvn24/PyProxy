@@ -23,9 +23,12 @@ from importlib.metadata import PackageNotFoundError, version
 from pyproxy.proxy_app import Proxy
 
 try:
-    __version__: str = version("pyproxy")
+    __version__: str = version("python-pyproxy")
 except PackageNotFoundError:  # pragma: no cover
-    __version__ = "0.0.0-dev"
+    try:
+        __version__ = version("pyproxy")
+    except PackageNotFoundError:
+        __version__ = "0.0.0-dev"
 
 __all__: list[str] = [
     "Proxy",

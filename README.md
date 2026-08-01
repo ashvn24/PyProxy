@@ -1,8 +1,8 @@
 # PyProxy
 
-[![CI](https://github.com/pyproxy/pyproxy/actions/workflows/ci.yml/badge.svg)](https://github.com/pyproxy/pyproxy/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/pyproxy/pyproxy/branch/main/graph/badge.svg)](https://codecov.io/gh/pyproxy/pyproxy)
-[![PyPI version](https://badge.fury.io/py/pyproxy.svg)](https://pypi.org/project/pyproxy/)
+[![CI](https://github.com/ashvn24/PyProxy/actions/workflows/ci.yml/badge.svg)](https://github.com/ashvn24/PyProxy/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/ashvn24/PyProxy/branch/main/graph/badge.svg)](https://codecov.io/gh/ashvn24/PyProxy)
+[![PyPI version](https://badge.fury.io/py/python-pyproxy.svg)](https://pypi.org/project/python-pyproxy/)
 [![Python 3.13+](https://img.shields.io/badge/python-3.13%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -34,7 +34,7 @@ ground up — no frameworks, no shortcuts.
 ### Installation
 
 ```bash
-pip install pyproxy
+pip install python-pyproxy
 ```
 
 ### Configuration
@@ -92,8 +92,8 @@ See [examples/](examples/) for annotated configuration examples.
 
 ```bash
 # Clone and install
-git clone https://github.com/pyproxy/pyproxy.git
-cd pyproxy
+git clone https://github.com/ashvn24/PyProxy.git
+cd PyProxy
 pip install -e ".[dev,test]"
 
 # Run checks
