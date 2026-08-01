@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PyProxy Documentation — Features, Configurations & API Reference</title>
+  <meta name="description" content="Complete documentation for PyProxy reverse proxy & load balancer. Detailed guide for all 15 features, YAML/TOML/JSON configs, and Python API code examples.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-body: #f8fafc;
+      --bg-sidebar: #ffffff;
+      --bg-card: #ffffff;
+      --text-dark: #0f172a;
+      --text-muted: #475569;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --primary-dark: #0f172a;
+      --accent-blue: #2563eb;
+      --accent-green: #10b981;
+      --code-bg: #1e293b;
+      --sidebar-width: 280px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-dark);
+      line-height: 1.6;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* Top Navigation Header */
+    header {
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 72px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover { color: var(--text-dark); }
+
+    .btn-gh {
+      background: var(--primary-dark);
+      color: #fff !important;
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.88rem;
+    }
+
+    /* Layout: Sidebar + Main Documentation Body */
+    .docs-layout {
+      display: flex;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Sidebar Navigation */
+    aside.sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-color);
+      position: sticky;
+      top: 72px;
+      height: calc(100vh - 72px);
+      overflow-y: auto;
+      padding: 32px 20px;
+    }
+
+    .sidebar-group {
+      margin-bottom: 24px;
+    }
+
+    .sidebar-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      padding-left: 12px;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .sidebar-menu a {
+      display: block;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-menu a:hover, .sidebar-menu a.active {
+      background: #f1f5f9;
+      color: var(--accent-blue);
+    }
+
+    /* Main Content Area */
+    main.content {
+      flex-grow: 1;
+      padding: 40px 60px;
+      max-width: 960px;
+    }
+
+    .doc-section {
+      margin-bottom: 64px;
+      scroll-margin-top: 90px;
+    }
+
+    .doc-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .doc-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(37, 99, 235, 0.1);
+      color: var(--accent-blue);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .doc-lead {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .feature-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .feature-box h4 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-dark);
+    }
+
+    .feature-box p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* Code Container */
+    .code-block {
+      background: var(--code-bg);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .code-header {
+      background: rgba(0, 0, 0, 0.25);
+      padding: 10px 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .code-body {
+      padding: 20px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.88rem;
+      color: #f8fafc;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .kw { color: #f472b6; }
+    .fn { color: #60a5fa; }
+    .str { color: #fde047; }
+    .cm { color: var(--text-light); font-style: italic; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header Navigation -->
+  <header>
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <img src="logo/pyproxy.jpeg" alt="PyProxy" style="height: 48px; width: auto; object-fit: contain;">
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#features">Features</a></li>
+        <li><a href="#server">Docs</a></li>
+        <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI (v0.1.2)</a></li>
+        <li><a href="https://github.com/ashvn24/PyProxy" target="_blank" class="btn-gh">GitHub</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Docs Layout -->
+  <div class="docs-layout">
+    
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-group">
+        <div class="sidebar-title">Getting Started</div>
+        <ul class="sidebar-menu">
+          <li><a href="#overview">Overview & Installation</a></li>
+          <li><a href="#cli">CLI Commands</a></li>
+        </ul>
+      </div>
+
+      <div class="sidebar-group">
+        <div class="sidebar-title">Core Subsystems (Phases 1-15)</div>
+        <ul class="sidebar-menu">
+          <li><a href="#server">1. TCP Server Engine</a></li>
+          <li><a href="#parser">2. HTTP Request Parser</a></li>
+          <li><a href="#response">3. Response Builder</a></li>
+          <li><a href="#routing">4. Routing Engine</a></li>
+          <li><a href="#proxy">5. Reverse Proxy Engine</a></li>
+          <li><a href="#upstream">6. Upstream Connection Pool</a></li>
+          <li><a href="#loadbalancer">7. Load Balancer</a></li>
+          <li><a href="#health">8. Health Checks & Circuit Breaker</a></li>
+          <li><a href="#tls">9. HTTPS & TLS Termination</a></li>
+          <li><a href="#websocket">10. WebSocket Tunneling</a></li>
+          <li><a href="#middleware">11. Middleware Pipeline</a></li>
+          <li><a href="#cache">12. Caching System</a></li>
+          <li><a href="#compression">13. Compression Engine</a></li>
+          <li><a href="#auth">14. Authentication</a></li>
+          <li><a href="#security">15. Security & Rate Limiting</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <main class="content">
+      
+      <!-- Section: Overview -->
+      <section id="overview" class="doc-section">
+        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.1.2</span></h1>
+        <p class="doc-lead">
+          PyProxy (published as <strong>python-pyproxy</strong> on PyPI) is a high-performance reverse proxy and load balancer built entirely from scratch in Python on <code>asyncio</code>.
+        </p>
+        
+        <div class="code-block">
+          <div class="code-header"><span>Terminal</span><span>pip</span></div>
+          <div class="code-body">
+            pip install python-pyproxy
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: CLI -->
+      <section id="cli" class="doc-section">
+        <h2 class="doc-title">Command Line Interface</h2>
+        <p class="doc-lead">PyProxy includes a full command-line suite for managing your proxy daemon.</p>
+
+        <div class="code-block">
+          <div class="code-header"><span>CLI Commands</span><span>bash</span></div>
+          <div class="code-body">
+<span class="cm"># Validate a configuration file</span>
+pyproxy validate config.yaml
+
+<span class="cm"># Start the proxy server</span>
+pyproxy start config.yaml
+
+<span class="cm"># Print version</span>
+pyproxy version
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 1: Server -->
+      <section id="server" class="doc-section">
+        <h2 class="doc-title">1. Asyncio TCP Server Engine</h2>
+        <p class="doc-lead">High-performance non-blocking socket listener with TCP_NODELAY and graceful connection draining.</p>
+
+        <div class="feature-box">
+          <h4>Server Configuration Example</h4>
+          <p>Controls TCP socket bindings, timeouts, maximum connection limits, and graceful shutdown thresholds.</p>
+          
+          <div class="code-block">
+            <div class="code-header"><span>config.yaml</span><span>YAML</span></div>
+            <div class="code-body">
+<span class="kw">server</span>:
+  <span class="str">bind_host</span>: "0.0.0.0"
+  <span class="str">bind_port</span>: 8080
+  <span class="str">backlog</span>: 1024
+  <span class="str">keepalive_timeout</span>: 75.0
+  <span class="str">read_timeout</span>: 30.0
+  <span class="str">write_timeout</span>: 30.0
+  <span class="str">max_connections</span>: 5000
+  <span class="str">shutdown_timeout</span>: 30.0
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Parser -->
+      <section id="parser" class="doc-section">
+        <h2 class="doc-title">2. HTTP Request Parser</h2>
+        <p class="doc-lead">Streamed parsing of HTTP/1.1 methods, headers, cookies, query strings, and chunked request bodies.</p>
+        
+        <div class="code-block">
+          <div class="code-header"><span>Python API</span><span>Python</span></div>
+          <div class="code-body">
+<span class="kw">from</span> pyproxy.protocol <span class="kw">import</span> HTTPParser
+
+<span class="cm"># Parse incoming request stream from Connection</span>
+request = <span class="kw">await</span> HTTPParser.parse_request(connection)
+print(request.method, request.path, request.headers.get(<span class="str">"Host"</span>))
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Response -->
+      <section id="response" class="doc-section">
+        <h2 class="doc-title">3. Response Builder Engine</h2>
+        <p class="doc-lead">Serializes status codes, headers, and streams chunked or byte-buffered responses with Range support.</p>
+      </section>
+
+      <!-- Section 4: Routing -->
+      <section id="routing" class="doc-section">
+        <h2 class="doc-title">4. Routing Engine</h2>
+        <p class="doc-lead">Supports Longest-Prefix, Exact, Regular Expression, Host Wildcard, and Method-based route matching.</p>
+        
+        <div class="code-block">
+          <div class="code-header"><span>config.yaml — Routing Rules</span><span>YAML</span></div>
+          <div class="code-body">
+<span class="kw">routes</span>:
+  - <span class="str">path</span>: "/api/v1"
+    <span class="str">strip_prefix</span>: true
+    <span class="str">methods</span>: ["GET", "POST"]
+    <span class="str">upstream</span>:
+      <span class="str">targets</span>:
+        - <span class="str">host</span>: "127.0.0.1"
+          <span class="str">port</span>: 3000
+  - <span class="str">path</span>: "/"
+    <span class="str">upstream</span>:
+      <span class="str">targets</span>:
+        - <span class="str">host</span>: "127.0.0.1"
+          <span class="str">port</span>: 8000
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Proxy -->
+      <section id="proxy" class="doc-section">
+        <h2 class="doc-title">5. Reverse Proxy Engine</h2>
+        <p class="doc-lead">Header manipulation (X-Forwarded-For, X-Real-IP, Forwarded RFC 7239), host rewriting, and response streaming.</p>
+      </section>
+
+      <!-- Section 6: Upstream -->
+      <section id="upstream" class="doc-section">
+        <h2 class="doc-title">6. Upstream Connection Pool</h2>
+        <p class="doc-lead">Maintains reusable persistent idle connection queues to backend targets with automatic retry policies.</p>
+      </section>
+
+      <!-- Section 7: Load Balancer -->
+      <section id="loadbalancer" class="doc-section">
+        <h2 class="doc-title">7. Load Balancer</h2>
+        <p class="doc-lead">5 Algorithms: Round Robin, Smooth Weighted Round Robin, Least Connections, IP Hash, and Sticky Sessions.</p>
+      </section>
+
+      <!-- Section 8: Health -->
+      <section id="health" class="doc-section">
+        <h2 class="doc-title">8. Health Probes & Circuit Breaker</h2>
+        <p class="doc-lead">Active TCP probes and passive failure tracking with CLOSED, OPEN, and HALF_OPEN circuit state transitions.</p>
+      </section>
+
+      <!-- Section 9: TLS -->
+      <section id="tls" class="doc-section">
+        <h2 class="doc-title">9. HTTPS & TLS Termination</h2>
+        <p class="doc-lead">TLS 1.2/1.3 enforcement, certificate chain loading, SNI matching, and Mutual TLS (mTLS) client verification.</p>
+        
+        <div class="code-block">
+          <div class="code-header"><span>TLS Configuration</span><span>YAML</span></div>
+          <div class="code-body">
+<span class="kw">tls</span>:
+  <span class="str">enabled</span>: true
+  <span class="str">cert_path</span>: "/etc/ssl/certs/server.crt"
+  <span class="str">key_path</span>: "/etc/ssl/private/server.key"
+  <span class="str">min_version</span>: "1.3"
+  <span class="str">ca_path</span>: "/etc/ssl/certs/client_ca.crt" <span class="cm"># Enables mTLS</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 10: WebSocket -->
+      <section id="websocket" class="doc-section">
+        <h2 class="doc-title">10. WebSocket Tunneling</h2>
+        <p class="doc-lead">RFC 6455 101 Switching Protocols handshakes and bidirectional async streaming frame tunnels.</p>
+      </section>
+
+      <!-- Section 11: Middleware -->
+      <section id="middleware" class="doc-section">
+        <h2 class="doc-title">11. Middleware Pipeline</h2>
+        <p class="doc-lead">Ordered before-request and after-response hooks for custom transformations and short-circuiting.</p>
+      </section>
+
+      <!-- Section 12: Cache -->
+      <section id="cache" class="doc-section">
+        <h2 class="doc-title">12. Caching System</h2>
+        <p class="doc-lead">In-memory TTL cache, ETag generation, Cache-Control parsing, and 304 Not Modified conditional responses.</p>
+      </section>
+
+      <!-- Section 13: Compression -->
+      <section id="compression" class="doc-section">
+        <h2 class="doc-title">13. Compression Engine</h2>
+        <p class="doc-lead">gzip Content-Encoding negotiation and payload compression with Vary header injection.</p>
+      </section>
+
+      <!-- Section 14: Auth -->
+      <section id="auth" class="doc-section">
+        <h2 class="doc-title">14. Authentication Middleware</h2>
+        <p class="doc-lead">HTTP Basic Auth, API Key header/query validation, and JWT token hooks.</p>
+      </section>
+
+      <!-- Section 15: Security -->
+      <section id="security" class="doc-section">
+        <h2 class="doc-title">15. Security & Rate Limiting</h2>
+        <p class="doc-lead">Token bucket rate limiting per client IP, CIDR allowlist/denylist filtering, and CORS preflight handling.</p>
+      </section>
+
+    </main>
+
+  </div>
+
+  <footer>
+    <p>PyProxy (<code>python-pyproxy</code>) is released under the MIT License.</p>
+    <p style="margin-top: 6px;">Created by <strong>Ashwin VK</strong> — Open Source Infrastructure</p>
+  </footer>
+
+</body>
+</html>
