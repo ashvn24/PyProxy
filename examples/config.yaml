@@ -1,0 +1,101 @@
+# ============================================================================
+# PyProxy Configuration — Full Example
+# ============================================================================
+# This file demonstrates all available configuration options with their
+# default values. Options can be overridden via environment variables
+# using the PYPROXY_ prefix (e.g., PYPROXY_SERVER__BIND_PORT=9090).
+
+# ----------------------------------------------------------------------------
+# Server — TCP listener and connection management
+# ----------------------------------------------------------------------------
+server:
+  # Address to bind the server to. Use "0.0.0.0" for all interfaces.
+  bind_host: "0.0.0.0"
+
+  # Port to listen on.
+  bind_port: 8080
+
+  # Maximum pending connections in the listen queue.
+  backlog: 1024
+
+  # Seconds to keep idle connections alive before closing.
+  keepalive_timeout: 75.0
+
+  # Seconds to wait for client data before timing out the read.
+  read_timeout: 30.0
+
+  # Seconds to wait for data to be written to the client.
+  write_timeout: 30.0
+
+  # Maximum concurrent connections (0 = unlimited).
+  max_connections: 0
+
+  # Seconds to wait for in-flight requests during graceful shutdown.
+  shutdown_timeout: 30.0
+
+# ----------------------------------------------------------------------------
+# Logging — Structured logging configuration
+# ----------------------------------------------------------------------------
+logging:
+  # Minimum log level: debug, info, warning, error, critical
+  level: "info"
+
+  # Output format: "json" for structured, "text" for human-readable
+  format: "json"
+
+  # Whether to emit access logs (one per proxied request).
+  access_log: true
+
+  # File path for access logs. Empty string = stdout only.
+  access_log_path: ""
+
+  # File path for error logs. Empty string = stderr only.
+  error_log_path: ""
+
+  # Maximum log file size (bytes) before rotation. Default: 10 MB.
+  max_file_size_bytes: 10485760
+
+  # Number of rotated log files to keep.
+  backup_count: 5
+
+# ----------------------------------------------------------------------------
+# Routes — Request routing to upstream backends
+# ----------------------------------------------------------------------------
+routes:
+  # Route to API backend
+  - path: "/api"
+    strip_prefix: false
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+    upstream:
+      connect_timeout: 5.0
+      read_timeout: 30.0
+      write_timeout: 30.0
+      max_retries: 3
+      retry_delay: 0.5
+      pool_size: 64
+      targets:
+        - host: "127.0.0.1"
+          port: 3000
+          weight: 3
+          max_connections: 0
+        - host: "127.0.0.1"
+          port: 3001
+          weight: 1
+          max_connections: 0
+
+  # Catch-all route
+  - path: "/"
+    upstream:
+      targets:
+        - host: "127.0.0.1"
+          port: 8000
+
+# ----------------------------------------------------------------------------
+# TLS — HTTPS termination (disabled by default)
+# ----------------------------------------------------------------------------
+tls:
+  enabled: false
+  cert_path: ""
+  key_path: ""
+  ca_path: ""       # For mutual TLS (mTLS)
+  min_version: "1.2"

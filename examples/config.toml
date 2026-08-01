@@ -1,0 +1,61 @@
+# ============================================================================
+# PyProxy Configuration — TOML Format
+# ============================================================================
+
+[server]
+bind_host = "0.0.0.0"
+bind_port = 8080
+backlog = 1024
+keepalive_timeout = 75.0
+read_timeout = 30.0
+write_timeout = 30.0
+max_connections = 0
+shutdown_timeout = 30.0
+
+[logging]
+level = "info"
+format = "json"
+access_log = true
+access_log_path = ""
+error_log_path = ""
+max_file_size_bytes = 10_485_760
+backup_count = 5
+
+[[routes]]
+path = "/api"
+strip_prefix = false
+methods = ["GET", "POST", "PUT", "DELETE", "PATCH"]
+
+[routes.upstream]
+connect_timeout = 5.0
+read_timeout = 30.0
+write_timeout = 30.0
+max_retries = 3
+retry_delay = 0.5
+pool_size = 64
+
+[[routes.upstream.targets]]
+host = "127.0.0.1"
+port = 3000
+weight = 3
+
+[[routes.upstream.targets]]
+host = "127.0.0.1"
+port = 3001
+weight = 1
+
+[[routes]]
+path = "/"
+
+[routes.upstream]
+
+[[routes.upstream.targets]]
+host = "127.0.0.1"
+port = 8000
+
+[tls]
+enabled = false
+cert_path = ""
+key_path = ""
+ca_path = ""
+min_version = "1.2"

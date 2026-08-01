@@ -1,0 +1,17 @@
+# Minimal PyProxy configuration
+# Proxies all traffic to a single backend on port 3000.
+
+server:
+  bind_host: "0.0.0.0"
+  bind_port: 8080
+
+routes:
+  - path: "/"
+    upstream:
+      targets:
+        - host: "127.0.0.1"
+          port: 3000
+
+logging:
+  level: "info"
+  format: "json"
