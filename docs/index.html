@@ -39,6 +39,12 @@
       padding: 0;
     }
 
+    html {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+    }
+
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       background-color: var(--bg-body);
@@ -46,6 +52,9 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+      position: relative;
     }
 
     a {
@@ -59,6 +68,8 @@
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 32px;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     /* Header / Nav */
@@ -77,6 +88,8 @@
       align-items: center;
       justify-content: space-between;
       height: 80px;
+      position: relative;
+      width: 100%;
     }
 
     .logo {
@@ -434,6 +447,8 @@
       cursor: pointer;
       padding: 8px;
       border-radius: 8px;
+      align-items: center;
+      justify-content: center;
     }
 
     .mobile-toggle svg {
@@ -448,6 +463,23 @@
       gap: 32px;
       max-width: 1000px;
       margin: 0 auto;
+      width: 100%;
+    }
+
+    .hero-grid > *,
+    .features-grid > *,
+    .roadmap-grid > *,
+    .feature-card {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    pre, code {
+      max-width: 100%;
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
     }
 
     @media (max-width: 992px) {
@@ -471,13 +503,13 @@
         height: 68px;
       }
       .mobile-toggle {
-        display: block;
+        display: inline-flex;
       }
       .nav-links {
         position: absolute;
         top: 100%;
-        left: 0;
-        right: 0;
+        left: -20px;
+        right: -20px;
         background: #ffffff;
         border-bottom: 1px solid var(--border-color);
         flex-direction: column;
@@ -486,6 +518,7 @@
         padding: 12px 20px;
         display: none;
         box-shadow: var(--shadow-md);
+        z-index: 101;
       }
       .nav-links.active {
         display: flex;
