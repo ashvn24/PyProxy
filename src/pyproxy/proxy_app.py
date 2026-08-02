@@ -44,20 +44,27 @@ class Proxy:
     def __init__(
         self,
         config_path: str | Path | None = None,
-        config: ProxyConfig | None = None,
+        config: ProxyConfig | dict[str, Any] | None = None,
+        port: int | None = None,
+        host: str | None = None,
     ) -> None:
         """Initialize Proxy application.
 
         Args:
             config_path: Path to configuration file (YAML/JSON/TOML).
-            config: Explicit ProxyConfig model (overrides config_path).
+            config: Raw Python dict or ProxyConfig model (overrides config_path).
+            port: Convenience port number override (e.g. 8080).
+            host: Convenience bind host override (e.g. "0.0.0.0").
 
         Raises:
             ConfigError: If configuration cannot be loaded or validated.
         """
-        if config is not None:
-            self.config: ProxyConfig = config
+        if isinstance(config, dict):
+            self.config: ProxyConfig = ProxyConfig.from_dict(config)
             self.config_path: Path | None = Path(config_path) if config_path else None
+        elif isinstance(config, ProxyConfig):
+            self.config = config
+            self.config_path = Path(config_path) if config_path else None
         elif config_path is not None:
             self.config_path = Path(config_path)
             loader = ConfigLoader(self.config_path)
@@ -65,6 +72,26 @@ class Proxy:
         else:
             self.config_path = None
             self.config = ProxyConfig()
+
+        if port is not None or host is not None:
+            server_cfg = ServerConfig(
+                bind_host=host or self.config.server.bind_host,
+                bind_port=port or self.config.server.bind_port,
+                backlog=self.config.server.backlog,
+                keepalive_timeout=self.config.server.keepalive_timeout,
+                read_timeout=self.config.server.read_timeout,
+                write_timeout=self.config.server.write_timeout,
+                max_connections=self.config.server.max_connections,
+                shutdown_timeout=self.config.server.shutdown_timeout,
+            )
+            self.config = ProxyConfig(
+                server=server_cfg,
+                logging=self.config.logging,
+                routes=self.config.routes,
+                tls=self.config.tls,
+                cache=self.config.cache,
+                security=self.config.security,
+            )
 
         # 1. Setup logging system
         setup_logging(self.config.logging)
@@ -81,8 +108,20 @@ class Proxy:
         self.load_balancer: LoadBalancer = LoadBalancer()
         self.proxy_engine: ProxyEngine = ProxyEngine(connection_pool=self.connection_pool)
         self.websocket_proxy: WebSocketProxy = WebSocketProxy()
-        self.health_checker: HealthChecker = HealthChecker()
         self.middleware_pipeline: MiddlewarePipeline = MiddlewarePipeline()
+        if self.config.security.rate_limiter.enabled:
+            from pyproxy.security.middleware import RateLimiterMiddleware
+            self.middleware_pipeline.add_middleware(RateLimiterMiddleware(self.config.security.rate_limiter))
+        if self.config.cache.enabled:
+            from pyproxy.cache import CacheMiddleware
+            self.middleware_pipeline.add_middleware(CacheMiddleware(self.config.cache))
+
+        self.proxy_engine: ProxyEngine = ProxyEngine(
+            connection_pool=self.connection_pool,
+            middleware_pipeline=self.middleware_pipeline,
+        )
+        self.websocket_proxy: WebSocketProxy = WebSocketProxy()
+        self.health_checker: HealthChecker = HealthChecker()
 
         self.tcp_server: TCPServer | None = None
         self.config_watcher: ConfigWatcher | None = None
@@ -156,6 +195,14 @@ class Proxy:
                     break
 
             except PyProxyError as exception:
+                if (
+                    exception.error_code in ("CONNECTION_READ_TIMEOUT", "PROTOCOL_TIMEOUT")
+                    or "closed connection" in exception.detail.lower()
+                    or "timed out" in exception.detail.lower()
+                    or "invalid request line" in exception.detail.lower()
+                ):
+                    logger.debug("Client connection closed: %s", client_conn.client_host)
+                    break
                 logger.warning("Proxy request error: %s", exception.detail)
                 error_response = HTTPResponse.create_error(
                     status_code=502 if "UPSTREAM" in exception.error_code else 400,
@@ -207,6 +254,48 @@ class Proxy:
             await self.tcp_server.stop()
         await self.connection_pool.close_all()
         logger.info("PyProxy shut down successfully")
+
+    def add_route(
+        self,
+        path: str,
+        targets: list[tuple[str, int]] | list[str] | list[dict[str, Any]],
+        methods: list[str] | None = None,
+        strip_prefix: bool = False,
+    ) -> None:
+        """Dynamically add a proxy route programmatically.
+
+        Args:
+            path: Path prefix or pattern to match (e.g. "/api").
+            targets: Upstream backend targets, e.g. [("127.0.0.1", 8001)].
+            methods: Allowed HTTP methods (defaults to all methods).
+            strip_prefix: Whether to strip matched prefix before proxying.
+        """
+        from pyproxy.config.models import RouteConfig, UpstreamConfig, UpstreamTargetConfig
+        from pyproxy.routing.rule import RouteRule
+
+        target_configs = []
+        for t in targets:
+            if isinstance(t, tuple) and len(t) >= 2:
+                target_configs.append(UpstreamTargetConfig(host=str(t[0]), port=int(t[1])))
+            elif isinstance(t, dict):
+                target_configs.append(UpstreamTargetConfig(**t))
+            elif isinstance(t, str):
+                cleaned = t.replace("http://", "").replace("https://", "").rstrip("/")
+                if ":" in cleaned:
+                    h, p = cleaned.split(":", 1)
+                    target_configs.append(UpstreamTargetConfig(host=h, port=int(p)))
+                else:
+                    target_configs.append(UpstreamTargetConfig(host=cleaned, port=80))
+
+        route_cfg = RouteConfig(
+            path=path,
+            upstream=UpstreamConfig(targets=tuple(target_configs)),
+            methods=tuple(m.upper() for m in methods) if methods else (),
+            strip_prefix=strip_prefix,
+        )
+        route_rule = RouteRule.from_config(route_cfg)
+        self.router.add_route(route_rule)
+        logger.info("Dynamically registered route %s -> %s", path, targets)
 
     def run(self) -> None:
         """Run the PyProxy server synchronously (blocking)."""

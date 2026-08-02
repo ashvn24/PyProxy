@@ -284,6 +284,37 @@ class TlsConfig:
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
+class RateLimiterConfig:
+    """Rate Limiter configuration."""
+
+    enabled: bool = False
+    rate: float = 100.0
+    burst: int = 200
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class SecurityConfig:
+    """Security configuration."""
+
+    rate_limiter: RateLimiterConfig = dataclasses.field(default_factory=RateLimiterConfig)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class CacheConfig:
+    """Cache configuration.
+
+    Attributes:
+        enabled: Whether caching is enabled.
+        max_size: Maximum entries in cache.
+        ttl: Time-to-live for cached responses in seconds.
+    """
+
+    enabled: bool = False
+    max_size: int = 1000
+    ttl: float = 60.0
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
 class ProxyConfig:
     """Root configuration model for PyProxy.
 
@@ -296,12 +327,16 @@ class ProxyConfig:
         logging: Logging configuration.
         routes: Ordered list of route configurations.
         tls: TLS/SSL configuration.
+        cache: Response cache configuration.
+        security: Security and rate limiting configuration.
     """
 
     server: ServerConfig = dataclasses.field(default_factory=ServerConfig)
     logging: LoggingConfig = dataclasses.field(default_factory=LoggingConfig)
     routes: tuple[RouteConfig, ...] = ()
     tls: TlsConfig = dataclasses.field(default_factory=TlsConfig)
+    cache: CacheConfig = dataclasses.field(default_factory=CacheConfig)
+    security: SecurityConfig = dataclasses.field(default_factory=SecurityConfig)
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ProxyConfig:
@@ -323,11 +358,18 @@ class ProxyConfig:
         server_data = data.get("server", {})
         logging_data = data.get("logging", {})
         tls_data = data.get("tls", {})
+        cache_data = data.get("cache", {})
+        security_data = data.get("security", {})
         routes_data = data.get("routes", [])
 
         server = ServerConfig(**server_data) if server_data else ServerConfig()
         logging_cfg = LoggingConfig(**logging_data) if logging_data else LoggingConfig()
         tls = TlsConfig(**tls_data) if tls_data else TlsConfig()
+        cache = CacheConfig(**cache_data) if cache_data else CacheConfig()
+
+        rate_data = security_data.get("rate_limiter", {}) if isinstance(security_data, dict) else {}
+        rate_cfg = RateLimiterConfig(**rate_data) if rate_data else RateLimiterConfig()
+        security = SecurityConfig(rate_limiter=rate_cfg)
 
         routes: list[RouteConfig] = []
         for route_data in routes_data:
@@ -356,4 +398,6 @@ class ProxyConfig:
             logging=logging_cfg,
             routes=tuple(routes),
             tls=tls,
+            cache=cache,
+            security=security,
         )

@@ -30,13 +30,19 @@ logger = logging.getLogger("pyproxy.proxy.engine")
 class ProxyEngine:
     """High-performance Reverse Proxy Engine."""
 
-    def __init__(self, connection_pool: UpstreamConnectionPool | None = None) -> None:
+    def __init__(
+        self,
+        connection_pool: UpstreamConnectionPool | None = None,
+        middleware_pipeline: Any | None = None,
+    ) -> None:
         """Initialize ProxyEngine.
 
         Args:
             connection_pool: UpstreamConnectionPool instance for connection reuse.
+            middleware_pipeline: Optional MiddlewarePipeline instance for response processing.
         """
         self.connection_pool: UpstreamConnectionPool = connection_pool or UpstreamConnectionPool()
+        self.middleware_pipeline: Any | None = middleware_pipeline
 
     async def forward(
         self,
@@ -81,7 +87,7 @@ class ProxyEngine:
                     target=target,
                     upstream_config=upstream_config,
                 )
-            except (UpstreamError, OSError) as exception:
+            except (UpstreamError, OSError, HttpParseError) as exception:
                 last_exception = exception
                 logger.warning(
                     "Attempt %d/%d failed forwarding to %s: %s",
@@ -241,6 +247,10 @@ class ProxyEngine:
                 headers=resp_headers,
                 body_stream=stream_upstream_body(),
             )
+
+            # Process post-response middleware (e.g. CacheMiddleware)
+            if self.middleware_pipeline:
+                response = await self.middleware_pipeline.execute_response(request, response)
 
             # 6. Stream response to client via HTTPResponseBuilder
             bytes_sent = await HTTPResponseBuilder.send_response(

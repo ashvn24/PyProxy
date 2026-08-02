@@ -34,15 +34,8 @@ class CacheManager:
 
     @staticmethod
     def compute_cache_key(request: HTTPRequest) -> str:
-        """Generate unique cache key for a request.
-
-        Args:
-            request: HTTPRequest object.
-
-        Returns:
-            MD5 hash string key.
-        """
-        raw_key = f"{request.method}:{request.host}:{request.target}"
+        """Generate unique cache key for a request based on method and target path."""
+        raw_key = f"GET:{request.target}"
         return hashlib.md5(raw_key.encode("utf-8")).hexdigest()
 
     @staticmethod

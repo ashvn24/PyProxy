@@ -43,12 +43,12 @@ class UpstreamConnection:
 
     @property
     def is_closed(self) -> bool:
-        """Check if socket is closed.
+        """Check if socket connection is closed, closing, or at EOF.
 
         Returns:
-            True if socket is closing or closed.
+            True if socket is closing, closed, or reached EOF.
         """
-        return self._is_closed or self.writer.is_closing()
+        return self._is_closed or self.writer.is_closing() or self.reader.at_eof()
 
     async def close(self) -> None:
         """Close the socket connection cleanly."""

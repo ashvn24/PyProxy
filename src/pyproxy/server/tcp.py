@@ -102,6 +102,23 @@ class TCPServer:
             for sock in self._server.sockets:
                 sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
+            # Install custom loop exception handler to handle Windows WinError 10054 proactor noise
+            loop = asyncio.get_running_loop()
+            existing_handler = loop.get_exception_handler()
+
+            def _custom_exception_handler(event_loop: asyncio.AbstractEventLoop, context: dict[str, Any]) -> None:
+                exc = context.get("exception")
+                if isinstance(exc, ConnectionResetError) or (
+                    isinstance(exc, OSError) and getattr(exc, "winerror", None) == 10054
+                ):
+                    return
+                if existing_handler:
+                    existing_handler(event_loop, context)
+                else:
+                    event_loop.default_exception_handler(context)
+
+            loop.set_exception_handler(_custom_exception_handler)
+
             self._is_running = True
             bound_addr = self.server_address
             logger.info(

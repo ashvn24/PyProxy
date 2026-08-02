@@ -11,7 +11,8 @@ import re
 from typing import TYPE_CHECKING, Any
 
 from pyproxy.config.models import RouteConfig, UpstreamConfig
-from pyproxy.exceptions.routing import ConfigValidationError, RoutingError
+from pyproxy.exceptions.config import ConfigValidationError
+from pyproxy.exceptions.routing import RoutingError
 
 if TYPE_CHECKING:
     from pyproxy.protocol.request import HTTPRequest
