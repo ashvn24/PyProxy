@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from pyproxy.exceptions import (
@@ -24,7 +26,6 @@ from pyproxy.exceptions import (
     UpstreamTimeoutError,
     WebSocketError,
 )
-from pathlib import Path
 
 
 class TestPyProxyError:

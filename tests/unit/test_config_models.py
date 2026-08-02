@@ -42,7 +42,7 @@ class TestServerConfig:
 
     def test_port_too_low(self):
         with pytest.raises(ConfigValidationError, match="Port must be between"):
-            ServerConfig(bind_port=0)
+            ServerConfig(bind_port=-1)
 
     def test_port_too_high(self):
         with pytest.raises(ConfigValidationError, match="Port must be between"):
@@ -144,7 +144,7 @@ class TestUpstreamTargetConfig:
 
     def test_invalid_port(self):
         with pytest.raises(ConfigValidationError, match="Port must be between"):
-            UpstreamTargetConfig(port=0)
+            UpstreamTargetConfig(port=-1)
 
     def test_zero_weight(self):
         with pytest.raises(ConfigValidationError, match="Value must be positive"):

@@ -22,7 +22,7 @@ jobs:
           python-version: "3.13"
 
       - name: Install Ruff
-        run: pip install ruff>=0.8
+        run: pip install -U ruff
 
       - name: Ruff check
         run: ruff check src/ tests/
