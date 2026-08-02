@@ -9,8 +9,9 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import urllib.parse
-from typing import Any, Awaitable, Callable, Sequence
+from collections.abc import Awaitable, Callable, Sequence
+from typing import Any
+from urllib.parse import urlparse
 
 from pyproxy.config.models import CacheConfig, RateLimiterConfig, RouteConfig, UpstreamConfig, UpstreamTargetConfig
 from pyproxy.middleware.pipeline import BaseMiddleware, MiddlewarePipeline
@@ -157,7 +158,7 @@ class PyProxyGateway:
         if "://" not in target:
             target = f"http://{target}"
 
-        parsed = urllib.parse.urlparse(target)
+        parsed = urlparse(target)
         host = parsed.hostname or "127.0.0.1"
         port = parsed.port or (443 if parsed.scheme == "https" else 80)
         ssl_enabled = parsed.scheme == "https"

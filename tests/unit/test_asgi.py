@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pytest
+
 from pyproxy.asgi import PyProxyGateway, PyProxyRouter
 from pyproxy.auth import AuthMiddleware
 from pyproxy.middleware import BaseMiddleware

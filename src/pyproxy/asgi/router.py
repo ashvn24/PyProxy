@@ -7,6 +7,7 @@ FastAPI / Starlette applications or APIRouter instances.
 from __future__ import annotations
 
 from typing import Any
+
 from pyproxy.asgi.gateway import PyProxyGateway
 
 
@@ -30,7 +31,7 @@ class PyProxyRouter:
         Args:
             routes: Optional initial route list.
         """
-        self.gateway = PyProxyGateway(routes=routes)
+        self.gateway: PyProxyGateway = PyProxyGateway(routes=routes)
 
     def add_route(
         self,
@@ -39,13 +40,13 @@ class PyProxyRouter:
         strip_prefix: bool = False,
         methods: set[str] | list[str] | None = None,
     ) -> None:
-        """Add a proxy route target.
+        """Add a route to the proxy router.
 
         Args:
-            path: Route path prefix.
-            target: Upstream service target URL.
-            strip_prefix: Whether to strip prefix before forwarding.
-            methods: HTTP methods filter.
+            path: Path prefix to match.
+            target: Upstream target URL.
+            strip_prefix: Whether to strip prefix when proxying.
+            methods: Set or list of allowed HTTP methods.
         """
         self.gateway.add_route(
             path=path,
