@@ -478,9 +478,12 @@
             <div class="dot dot-green"></div>
           </div>
           <div class="terminal-code">
-            <div><span class="code-prompt">>>></span> <span class="keyword">import</span> pyproxy</div>
-            <div><span class="code-prompt">>>></span> proxy = pyproxy.<span class="code-func">Proxy</span>(config_path=<span class="code-str">'config.yaml'</span>)</div>
-            <div class="code-out">Connected via PyProxy tunnel. Latency: 12ms.</div>
+            <div><span class="code-prompt"># Use as a Python Library (No config.yaml needed)</span></div>
+            <div><span class="keyword">from</span> pyproxy <span class="keyword">import</span> Proxy</div>
+            <div>proxy = <span class="code-func">Proxy</span>(port=<span class="code-str">8080</span>)</div>
+            <div>proxy.<span class="code-func">add_route</span>(<span class="code-str">"/api"</span>, targets=[(<span class="code-str">"127.0.0.1"</span>, <span class="code-str">8001</span>)])</div>
+            <div>proxy.<span class="code-func">run</span>()</div>
+            <div class="code-out">🚀 PyProxy engine initialized on 0.0.0.0:8080 (v0.1.3)</div>
           </div>
         </div>
 
@@ -640,8 +643,9 @@ port = 3000</code></pre>
         <div id="tab-python" class="tab-pane">
 <pre><code><span style="color: #f472b6;">from</span> pyproxy <span style="color: #f472b6;">import</span> Proxy
 
-<span style="color: #94a3b8;"># Instantiate and run server</span>
-proxy = Proxy(config_path=<span style="color: #fde047;">"config.yaml"</span>)
+<span style="color: #94a3b8;"># Programmatic Python Library API (Zero YAML required)</span>
+proxy = Proxy(port=<span style="color: #fde047;">8080</span>)
+proxy.add_route(<span style="color: #fde047;">"/api"</span>, targets=[(<span style="color: #fde047;">"127.0.0.1"</span>, <span style="color: #fde047;">8001</span>)])
 proxy.run()</code></pre>
         </div>
       </div>
@@ -655,9 +659,19 @@ proxy.run()</code></pre>
         <div class="release-item">
           <div class="release-header">
             <div class="release-version">
-              v0.1.2
+              v0.1.3
               <span class="badge-latest">PyPI Live</span>
             </div>
+            <div class="release-date">August 2026</div>
+          </div>
+          <div class="release-body">
+            Programmatic Python Library API (<code>Proxy(port=8080)</code>, <code>proxy.add_route()</code>, raw Python dict configs), In-Memory TTL Response Caching with auto-invalidation, Token Bucket Rate Limiting, and Windows proactor connection reset fixes.
+          </div>
+        </div>
+
+        <div class="release-item">
+          <div class="release-header">
+            <div class="release-version">v0.1.2</div>
             <div class="release-date">August 2026</div>
           </div>
           <div class="release-body">

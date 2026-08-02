@@ -268,7 +268,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#features">Features</a></li>
         <li><a href="#server">Docs</a></li>
-        <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI (v0.1.2)</a></li>
+        <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI (v0.1.3)</a></li>
         <li><a href="https://github.com/ashvn24/PyProxy" target="_blank" class="btn-gh">GitHub</a></li>
       </ul>
     </div>
@@ -314,7 +314,7 @@
       
       <!-- Section: Overview -->
       <section id="overview" class="doc-section">
-        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.1.2</span></h1>
+        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.1.3</span></h1>
         <p class="doc-lead">
           PyProxy (published as <strong>python-pyproxy</strong> on PyPI) is a high-performance reverse proxy and load balancer built entirely from scratch in Python on <code>asyncio</code>.
         </p>
@@ -478,7 +478,17 @@ print(request.method, request.path, request.headers.get(<span class="str">"Host"
       <!-- Section 12: Cache -->
       <section id="cache" class="doc-section">
         <h2 class="doc-title">12. Caching System</h2>
-        <p class="doc-lead">In-memory TTL cache, ETag generation, Cache-Control parsing, and 304 Not Modified conditional responses.</p>
+        <p class="doc-lead">In-memory TTL cache, ETag generation, Cache-Control parsing, 304 Not Modified responses, and automatic cache invalidation on mutating requests (POST, PUT, DELETE).</p>
+        
+        <div class="code-block">
+          <div class="code-header"><span>Cache Configuration</span><span>YAML</span></div>
+          <div class="code-body">
+<span class="kw">cache</span>:
+  <span class="str">enabled</span>: true
+  <span class="str">max_size</span>: 1000
+  <span class="str">ttl</span>: 60.0 <span class="cm"># In-memory TTL in seconds</span>
+          </div>
+        </div>
       </section>
 
       <!-- Section 13: Compression -->
@@ -496,7 +506,21 @@ print(request.method, request.path, request.headers.get(<span class="str">"Host"
       <!-- Section 15: Security -->
       <section id="security" class="doc-section">
         <h2 class="doc-title">15. Security & Rate Limiting</h2>
-        <p class="doc-lead">Token bucket rate limiting per client IP, CIDR allowlist/denylist filtering, and CORS preflight handling.</p>
+        <p class="doc-lead">Token bucket rate limiting per client IP (HTTP 429), CIDR allowlist/denylist filtering, and CORS preflight handling.</p>
+        
+        <div class="code-block">
+          <div class="code-header"><span>Security Configuration</span><span>YAML</span></div>
+          <div class="code-body">
+<span class="kw">security</span>:
+  <span class="str">rate_limiter</span>:
+    <span class="str">enabled</span>: true
+    <span class="str">rate</span>: 10.0 <span class="cm"># 10 requests per second</span>
+    <span class="str">burst</span>: 15  <span class="cm"># Token bucket max capacity</span>
+  <span class="str">cors</span>:
+    <span class="str">enabled</span>: true
+    <span class="str">allow_origins</span>: ["*"]
+          </div>
+        </div>
       </section>
 
     </main>
