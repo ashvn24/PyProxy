@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PyProxy Documentation — Features, Configurations & API Reference</title>
-  <meta name="description" content="Complete documentation for PyProxy reverse proxy & load balancer. Detailed guides and code examples for all 15 features using YAML, Python Library API, and CLI options.">
+  <meta name="description" content="Complete documentation for PyProxy reverse proxy & load balancer. Interactive single-card tabbed code examples for YAML, Python Library API, and CLI commands.">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -184,51 +184,61 @@
     .doc-lead {
       font-size: 1.1rem;
       color: var(--text-muted);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
-    /* Options Multi-Grid Container */
-    .option-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      margin-top: 16px;
-      margin-bottom: 24px;
-    }
-
-    .code-block {
+    /* Interactive Tabbed Code Card */
+    .code-card {
       background: var(--code-bg);
       border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
       overflow: hidden;
+      margin-top: 16px;
+      margin-bottom: 28px;
     }
 
-    .code-header {
-      background: rgba(0, 0, 0, 0.25);
-      padding: 10px 16px;
-      font-family: 'Fira Code', monospace;
-      font-size: 0.8rem;
-      color: var(--text-light);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    .code-tabs-header {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: rgba(0, 0, 0, 0.3);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0 12px;
     }
 
-    .code-header span.tag {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 0.75rem;
+    .code-tab-btn {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .code-tab-btn:hover {
+      color: #f8fafc;
+    }
+
+    .code-tab-btn.active {
       color: #38bdf8;
+      border-bottom-color: #38bdf8;
+      background: rgba(255, 255, 255, 0.05);
     }
 
-    .code-body {
-      padding: 18px 20px;
+    .code-tab-content {
+      display: none;
+      padding: 22px 24px;
       font-family: 'Fira Code', monospace;
       font-size: 0.88rem;
       color: #f8fafc;
       overflow-x: auto;
-      line-height: 1.6;
+      line-height: 1.65;
+    }
+
+    .code-tab-content.active {
+      display: block;
     }
 
     .kw { color: #f472b6; }
@@ -309,10 +319,12 @@
           PyProxy (published as <strong>python-pyproxy</strong> on PyPI) is a high-performance reverse proxy and load balancer built entirely from scratch in Python on <code>asyncio</code>.
         </p>
         
-        <div class="code-block">
-          <div class="code-header"><span>Terminal Installation</span><span class="tag">pip</span></div>
-          <div class="code-body">
-            pip install python-pyproxy
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active">Terminal Installation</button>
+          </div>
+          <div class="code-tab-content active">
+<pre><code>pip install python-pyproxy</code></pre>
           </div>
         </div>
       </section>
@@ -322,17 +334,19 @@
         <h2 class="doc-title">Command Line Interface (CLI)</h2>
         <p class="doc-lead">PyProxy includes a command-line interface for validating configurations and running reverse proxy daemons.</p>
 
-        <div class="code-block">
-          <div class="code-header"><span>CLI Suite</span><span class="tag">CLI</span></div>
-          <div class="code-body">
-<span class="cm"># Validate a configuration file</span>
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active">CLI Commands</button>
+          </div>
+          <div class="code-tab-content active">
+<pre><code><span class="cm"># Validate a configuration file</span>
 pyproxy validate config.yaml
 
 <span class="cm"># Start the reverse proxy daemon</span>
 pyproxy start config.yaml
 
 <span class="cm"># Display PyProxy version</span>
-pyproxy version
+pyproxy version</code></pre>
           </div>
         </div>
       </section>
@@ -342,23 +356,24 @@ pyproxy version
         <h2 class="doc-title">1. Asyncio TCP Server Engine</h2>
         <p class="doc-lead">Non-blocking TCP socket server with persistent connection handling, TCP_NODELAY, and configurable timeouts.</p>
 
-        <div class="option-grid">
-          <div class="code-block">
-            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
-            <div class="code-body">
-<span class="kw">server</span>:
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active" onclick="switchSectionTab(this, 'server-yaml')">YAML Config</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'server-python')">Python Library</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'server-cli')">CLI Command</button>
+          </div>
+
+          <div id="server-yaml" class="code-tab-content active">
+<pre><code><span class="kw">server</span>:
   <span class="str">bind_host</span>: "0.0.0.0"
   <span class="str">bind_port</span>: 8080
   <span class="str">max_connections</span>: 5000
   <span class="str">keepalive_timeout</span>: 75.0
-  <span class="str">read_timeout</span>: 30.0
-            </div>
+  <span class="str">read_timeout</span>: 30.0</code></pre>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
-            <div class="code-body">
-<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+          <div id="server-python" class="code-tab-content">
+<pre><code><span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
 
 proxy = Proxy(
     host=<span class="str">"0.0.0.0"</span>,
@@ -370,15 +385,11 @@ proxy = Proxy(
         }
     }
 )
-proxy.run()
-            </div>
+proxy.run()</code></pre>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option C: CLI Daemon Command</span><span class="tag">CLI</span></div>
-            <div class="code-body">
-pyproxy start config.yaml --host 0.0.0.0 --port 8080
-            </div>
+          <div id="server-cli" class="code-tab-content">
+<pre><code>pyproxy start config.yaml --host 0.0.0.0 --port 8080</code></pre>
           </div>
         </div>
       </section>
@@ -388,42 +399,41 @@ pyproxy start config.yaml --host 0.0.0.0 --port 8080
         <h2 class="doc-title">4. Routing Engine</h2>
         <p class="doc-lead">Supports prefix matching, path stripping, HTTP method filtering, and dynamic route registration.</p>
 
-        <div class="option-grid">
-          <div class="code-block">
-            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
-            <div class="code-body">
-<span class="kw">routes</span>:
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active" onclick="switchSectionTab(this, 'routing-yaml')">YAML Config</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'routing-python')">Python Library</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'routing-cli')">CLI Command</button>
+          </div>
+
+          <div id="routing-yaml" class="code-tab-content active">
+<pre><code><span class="kw">routes</span>:
   - <span class="str">path</span>: "/api/v1"
     <span class="str">strip_prefix</span>: true
     <span class="str">methods</span>: ["GET", "POST"]
     <span class="str">upstream</span>:
       <span class="str">targets</span>:
         - <span class="str">host</span>: "127.0.0.1"
-          <span class="str">port</span>: 8001
-            </div>
+          <span class="str">port</span>: 8001</code></pre>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
-            <div class="code-body">
-<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+          <div id="routing-python" class="code-tab-content">
+<pre><code><span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
 
 proxy = Proxy(port=8080)
+
+<span class="cm"># Dynamically register routes programmatically</span>
 proxy.add_route(
     path=<span class="str">"/api/v1"</span>,
     targets=[(<span class="str">"127.0.0.1"</span>, 8001)],
     methods=[<span class="str">"GET"</span>, <span class="str">"POST"</span>],
     strip_prefix=True
 )
-proxy.run()
-            </div>
+proxy.run()</code></pre>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option C: CLI Verification</span><span class="tag">CLI</span></div>
-            <div class="code-body">
-pyproxy validate config.yaml
-            </div>
+          <div id="routing-cli" class="code-tab-content">
+<pre><code>pyproxy validate config.yaml</code></pre>
           </div>
         </div>
       </section>
@@ -433,11 +443,15 @@ pyproxy validate config.yaml
         <h2 class="doc-title">7. Load Balancer</h2>
         <p class="doc-lead">5 Algorithms: Round Robin, Smooth Weighted Round Robin, Least Connections, IP Hash, and Sticky Sessions.</p>
 
-        <div class="option-grid">
-          <div class="code-block">
-            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
-            <div class="code-body">
-<span class="kw">routes</span>:
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active" onclick="switchSectionTab(this, 'lb-yaml')">YAML Config</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'lb-python')">Python Library</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'lb-cli')">CLI Command</button>
+          </div>
+
+          <div id="lb-yaml" class="code-tab-content active">
+<pre><code><span class="kw">routes</span>:
   - <span class="str">path</span>: "/service"
     <span class="str">upstream</span>:
       <span class="str">algorithm</span>: "least_connections"
@@ -447,14 +461,11 @@ pyproxy validate config.yaml
           <span class="str">weight</span>: 3
         - <span class="str">host</span>: "10.0.0.2"
           <span class="str">port</span>: 8002
-          <span class="str">weight</span>: 1
-            </div>
+          <span class="str">weight</span>: 1</code></pre>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
-            <div class="code-body">
-<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+          <div id="lb-python" class="code-tab-content">
+<pre><code><span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
 
 proxy = Proxy(
     port=8080,
@@ -473,8 +484,11 @@ proxy = Proxy(
         ]
     }
 )
-proxy.run()
-            </div>
+proxy.run()</code></pre>
+          </div>
+
+          <div id="lb-cli" class="code-tab-content">
+<pre><code>pyproxy start config.yaml</code></pre>
           </div>
         </div>
       </section>
@@ -484,23 +498,24 @@ proxy.run()
         <h2 class="doc-title">9. HTTPS & TLS Termination</h2>
         <p class="doc-lead">TLS 1.2/1.3 encryption, SNI matching, certificate chain loading, and Mutual TLS (mTLS) client verification.</p>
 
-        <div class="option-grid">
-          <div class="code-block">
-            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
-            <div class="code-body">
-<span class="kw">tls</span>:
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active" onclick="switchSectionTab(this, 'tls-yaml')">YAML Config</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'tls-python')">Python Library</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'tls-cli')">CLI Command</button>
+          </div>
+
+          <div id="tls-yaml" class="code-tab-content active">
+<pre><code><span class="kw">tls</span>:
   <span class="str">enabled</span>: true
   <span class="str">cert_path</span>: "/etc/ssl/certs/server.crt"
   <span class="str">key_path</span>: "/etc/ssl/private/server.key"
   <span class="str">min_version</span>: "1.3"
-  <span class="str">ca_path</span>: "/etc/ssl/certs/ca.crt" <span class="cm"># Optional mTLS</span>
-            </div>
+  <span class="str">ca_path</span>: "/etc/ssl/certs/ca.crt" <span class="cm"># Enables mTLS</span></code></pre>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
-            <div class="code-body">
-<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+          <div id="tls-python" class="code-tab-content">
+<pre><code><span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
 
 proxy = Proxy(
     port=8443,
@@ -513,8 +528,11 @@ proxy = Proxy(
         }
     }
 )
-proxy.run()
-            </div>
+proxy.run()</code></pre>
+          </div>
+
+          <div id="tls-cli" class="code-tab-content">
+<pre><code>pyproxy start config.yaml</code></pre>
           </div>
         </div>
       </section>
@@ -524,21 +542,22 @@ proxy.run()
         <h2 class="doc-title">12. Caching System</h2>
         <p class="doc-lead">In-memory TTL cache, ETag generation, Cache-Control parsing, 304 responses, and auto-invalidation on POST/PUT/DELETE.</p>
 
-        <div class="option-grid">
-          <div class="code-block">
-            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
-            <div class="code-body">
-<span class="kw">cache</span>:
-  <span class="str">enabled</span>: true
-  <span class="str">max_size</span>: 1000
-  <span class="str">ttl</span>: 60.0 <span class="cm"># In-memory TTL in seconds</span>
-            </div>
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active" onclick="switchSectionTab(this, 'cache-yaml')">YAML Config</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'cache-python')">Python Library</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'cache-cli')">CLI Command</button>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
-            <div class="code-body">
-<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+          <div id="cache-yaml" class="code-tab-content active">
+<pre><code><span class="kw">cache</span>:
+  <span class="str">enabled</span>: true
+  <span class="str">max_size</span>: 1000
+  <span class="str">ttl</span>: 60.0 <span class="cm"># In-memory TTL in seconds</span></code></pre>
+          </div>
+
+          <div id="cache-python" class="code-tab-content">
+<pre><code><span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
 
 proxy = Proxy(
     port=8080,
@@ -550,8 +569,11 @@ proxy = Proxy(
     }
 )
 proxy.add_route(<span class="str">"/api"</span>, targets=[(<span class="str">"127.0.0.1"</span>, 8001)])
-proxy.run()
-            </div>
+proxy.run()</code></pre>
+          </div>
+
+          <div id="cache-cli" class="code-tab-content">
+<pre><code>pyproxy start config.yaml</code></pre>
           </div>
         </div>
       </section>
@@ -561,25 +583,26 @@ proxy.run()
         <h2 class="doc-title">15. Security & Rate Limiting</h2>
         <p class="doc-lead">Token bucket rate limiting per client IP (HTTP 429), CIDR allowlist/denylist filtering, and CORS preflight headers.</p>
 
-        <div class="option-grid">
-          <div class="code-block">
-            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
-            <div class="code-body">
-<span class="kw">security</span>:
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active" onclick="switchSectionTab(this, 'sec-yaml')">YAML Config</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'sec-python')">Python Library</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'sec-cli')">CLI Command</button>
+          </div>
+
+          <div id="sec-yaml" class="code-tab-content active">
+<pre><code><span class="kw">security</span>:
   <span class="str">rate_limiter</span>:
     <span class="str">enabled</span>: true
     <span class="str">rate</span>: 10.0  <span class="cm"># Tokens refilled per second</span>
     <span class="str">burst</span>: 15   <span class="cm"># Max token bucket capacity</span>
   <span class="str">cors</span>:
     <span class="str">enabled</span>: true
-    <span class="str">allow_origins</span>: ["*"]
-            </div>
+    <span class="str">allow_origins</span>: ["*"]</code></pre>
           </div>
 
-          <div class="code-block">
-            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
-            <div class="code-body">
-<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+          <div id="sec-python" class="code-tab-content">
+<pre><code><span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
 
 proxy = Proxy(
     port=8080,
@@ -597,8 +620,11 @@ proxy = Proxy(
         }
     }
 )
-proxy.run()
-            </div>
+proxy.run()</code></pre>
+          </div>
+
+          <div id="sec-cli" class="code-tab-content">
+<pre><code>pyproxy start config.yaml</code></pre>
           </div>
         </div>
       </section>
@@ -612,5 +638,14 @@ proxy.run()
     <p style="margin-top: 6px;">Created by <strong>Ashwin VK</strong> — Open Source Infrastructure</p>
   </footer>
 
+  <script>
+    function switchSectionTab(btn, contentId) {
+      const container = btn.closest('.code-card');
+      container.querySelectorAll('.code-tab-btn').forEach(b => b.classList.remove('active'));
+      container.querySelectorAll('.code-tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      container.querySelector('#' + contentId).classList.add('active');
+    }
+  </script>
 </body>
 </html>
