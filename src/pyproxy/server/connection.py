@@ -7,6 +7,7 @@ asyncio StreamReader and StreamWriter pairs.
 from __future__ import annotations
 
 import asyncio
+from contextlib import suppress
 from typing import TYPE_CHECKING
 
 from pyproxy.exceptions.server import ServerError
@@ -80,7 +81,7 @@ class Connection:
         """Update the last activity timestamp to the current monotonic time."""
         self.last_active_at_ns = monotonic_ns()
 
-    async def read(self, n: int = -1, timeout: float = 0.0) -> bytes:
+    async def read(self, n: int = -1, timeout: float = 0.0) -> bytes:  # noqa: ASYNC109
         """Read up to n bytes from the client.
 
         Args:
@@ -115,7 +116,7 @@ class Connection:
                 context={"client_host": self.client_host, "client_port": self.client_port},
             ) from exception
 
-    async def read_line(self, timeout: float = 0.0) -> bytes:
+    async def read_line(self, timeout: float = 0.0) -> bytes:  # noqa: ASYNC109
         """Read a single line (ending in b'\\n') from the client.
 
         Args:
@@ -149,7 +150,7 @@ class Connection:
                 context={"client_host": self.client_host, "client_port": self.client_port},
             ) from exception
 
-    async def read_exactly(self, number_of_bytes: int, timeout: float = 0.0) -> bytes:
+    async def read_exactly(self, number_of_bytes: int, timeout: float = 0.0) -> bytes:  # noqa: ASYNC109
         """Read exactly the specified number of bytes from the client.
 
         Args:
@@ -200,7 +201,7 @@ class Connection:
             return
         self._writer.write(data)
 
-    async def drain(self, timeout: float = 0.0) -> None:
+    async def drain(self, timeout: float = 0.0) -> None:  # noqa: ASYNC109
         """Flush the underlying socket write buffer, applying backpressure.
 
         Args:
@@ -236,8 +237,6 @@ class Connection:
         if self._is_closed:
             return
         self._is_closed = True
-        try:
+        with suppress(OSError):
             self._writer.close()
             await self._writer.wait_closed()
-        except OSError:
-            pass

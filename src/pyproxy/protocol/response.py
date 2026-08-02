@@ -93,7 +93,7 @@ class HTTPResponse:
         error_json = (
             f'{{"error": "{reason}", "code": {status_code}, '
             f'"detail": "{detail or reason}"}}'
-        ).encode("utf-8")
+        ).encode()
 
         response_headers.set("Content-Length", str(len(error_json)))
 

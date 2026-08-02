@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import asyncio
+from contextlib import suppress
+
 import pytest
 
 from pyproxy.config.models import ServerConfig
@@ -46,10 +48,8 @@ class TestServerLifecycleIntegration:
     async def test_graceful_shutdown_with_active_clients(self):
         """Verify that server gracefully closes active connections upon stop."""
         async def hold_handler(connection: Connection) -> None:
-            try:
+            with suppress(Exception):
                 await connection.read(1024, timeout=30.0)
-            except Exception:
-                pass
 
         config = ServerConfig(bind_host="127.0.0.1", bind_port=0, shutdown_timeout=2.0)
         server = TCPServer(config=config, connection_handler=hold_handler)

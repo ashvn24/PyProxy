@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from contextlib import suppress
 from pathlib import Path
 from typing import Any
 
@@ -215,10 +216,8 @@ class Proxy:
                     status_code=502 if "UPSTREAM" in exception.error_code else 400,
                     detail=exception.detail,
                 )
-                try:
+                with suppress(Exception):
                     await HTTPResponseBuilder.send_response(client_conn, error_response)
-                except Exception:
-                    pass
                 break
             except Exception as exception:
                 logger.error("Unexpected proxy error: %s", exception, exc_info=True)
