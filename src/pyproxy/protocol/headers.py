@@ -138,6 +138,10 @@ class Headers:
     def __contains__(self, name: str) -> bool:
         return self.contains(name)
 
+    def items(self) -> Iterator[tuple[str, str]]:
+        """Iterate over all (original_name, value) pairs."""
+        return iter(self)
+
     def __iter__(self) -> Iterator[tuple[str, str]]:
         """Iterate over all (original_name, value) pairs."""
         for _, (orig_name, values) in self._store.items():

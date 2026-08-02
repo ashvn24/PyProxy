@@ -293,10 +293,21 @@ class RateLimiterConfig:
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
+class CORSConfig:
+    """CORS configuration."""
+
+    enabled: bool = False
+    allow_origins: tuple[str, ...] = ("*",)
+    allow_methods: tuple[str, ...] = ("GET", "POST", "PUT", "DELETE", "OPTIONS")
+    allow_headers: tuple[str, ...] = ("*",)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
 class SecurityConfig:
     """Security configuration."""
 
     rate_limiter: RateLimiterConfig = dataclasses.field(default_factory=RateLimiterConfig)
+    cors: CORSConfig = dataclasses.field(default_factory=CORSConfig)
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
@@ -369,7 +380,9 @@ class ProxyConfig:
 
         rate_data = security_data.get("rate_limiter", {}) if isinstance(security_data, dict) else {}
         rate_cfg = RateLimiterConfig(**rate_data) if rate_data else RateLimiterConfig()
-        security = SecurityConfig(rate_limiter=rate_cfg)
+        cors_data = security_data.get("cors", {}) if isinstance(security_data, dict) else {}
+        cors_cfg = CORSConfig(**cors_data) if cors_data else CORSConfig()
+        security = SecurityConfig(rate_limiter=rate_cfg, cors=cors_cfg)
 
         routes: list[RouteConfig] = []
         for route_data in routes_data:

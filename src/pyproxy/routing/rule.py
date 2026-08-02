@@ -49,6 +49,11 @@ class RouteRule:
         "strip_prefix",
         "upstream_config",
         "_compiled_regex",
+        "_target_url",
+        "_target_host",
+        "_target_port",
+        "_target_ssl",
+        "_target_path_prefix",
     )
 
     def __init__(

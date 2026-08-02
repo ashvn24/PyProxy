@@ -53,6 +53,7 @@ class CacheMiddleware(BaseMiddleware):
             logger.info("Cache HIT for %s — short-circuiting upstream call", request.target)
             status_code, reason_phrase, header_tuples, body = pickle.loads(cached_bytes)
             headers = Headers(header_tuples)
+            headers.set("X-Cache", "HIT")
             response = HTTPResponse(
                 status_code=status_code,
                 reason_phrase=reason_phrase,
@@ -68,6 +69,8 @@ class CacheMiddleware(BaseMiddleware):
         """Process outgoing response to store in cache if eligible."""
         if not self.config.enabled or request.method not in ("GET", "HEAD") or response.status_code != 200:
             return response
+
+        response.headers.set("X-Cache", "MISS")
 
         cache_key = self.manager.compute_cache_key(request)
 

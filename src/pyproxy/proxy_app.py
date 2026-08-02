@@ -112,6 +112,13 @@ class Proxy:
         if self.config.security.rate_limiter.enabled:
             from pyproxy.security.middleware import RateLimiterMiddleware
             self.middleware_pipeline.add_middleware(RateLimiterMiddleware(self.config.security.rate_limiter))
+        if self.config.security.cors.enabled:
+            from pyproxy.security.cors import CORSMiddleware
+            self.middleware_pipeline.add_middleware(CORSMiddleware(
+                allow_origins=list(self.config.security.cors.allow_origins),
+                allow_methods=list(self.config.security.cors.allow_methods),
+                allow_headers=list(self.config.security.cors.allow_headers),
+            ))
         if self.config.cache.enabled:
             from pyproxy.cache import CacheMiddleware
             self.middleware_pipeline.add_middleware(CacheMiddleware(self.config.cache))

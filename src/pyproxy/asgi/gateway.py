@@ -60,6 +60,8 @@ class PyProxyGateway:
         enable_caching: bool = False,
         rate_limit: int | None = None,
         auth: Any | None = None,
+        enable_cors: bool = False,
+        cors: Any | None = None,
         middlewares: Sequence[BaseMiddleware] | None = None,
         timeout: float = 30.0,
     ) -> None:
@@ -71,6 +73,8 @@ class PyProxyGateway:
             enable_caching: Enable in-memory response caching plugin.
             rate_limit: Configurable rate limit per IP (requests per minute).
             auth: AuthMiddleware instance or dict configuration for API Key / Basic / JWT.
+            enable_cors: Enable CORS preflight and headers plugin.
+            cors: Custom CORSMiddleware instance or dict configuration.
             middlewares: Custom list of BaseMiddleware instances to run in pipeline.
             timeout: Upstream connection/read timeout in seconds.
         """
@@ -87,6 +91,15 @@ class PyProxyGateway:
             for mw in middlewares:
                 self.middleware_pipeline.add_middleware(mw)
 
+        if enable_cors or cors:
+            from pyproxy.security.cors import CORSMiddleware
+            if isinstance(cors, CORSMiddleware):
+                self.middleware_pipeline.add_middleware(cors)
+            elif isinstance(cors, dict):
+                self.middleware_pipeline.add_middleware(CORSMiddleware(**cors))
+            else:
+                self.middleware_pipeline.add_middleware(CORSMiddleware())
+
         if auth is not None:
             if isinstance(auth, BaseMiddleware):
                 self.middleware_pipeline.add_middleware(auth)
@@ -97,7 +110,7 @@ class PyProxyGateway:
         if rate_limit is not None:
             from pyproxy.security.middleware import RateLimiterMiddleware
             self.middleware_pipeline.add_middleware(
-                RateLimiterMiddleware(RateLimiterConfig(enabled=True, requests_per_minute=rate_limit))
+                RateLimiterMiddleware(RateLimiterConfig(enabled=True, rate=float(rate_limit), burst=15))
             )
 
         if enable_caching:
@@ -152,8 +165,7 @@ class PyProxyGateway:
 
         target_cfg = UpstreamTargetConfig(host=host, port=port, weight=1)
         upstream_cfg = UpstreamConfig(
-            targets=[target_cfg],
-            algorithm="round_robin",
+            targets=(target_cfg,),
         )
 
         rule = RouteRule(
@@ -218,10 +230,20 @@ class PyProxyGateway:
         send: Send,
     ) -> None:
         """Forward ASGI HTTP request to upstream target and stream response back."""
-        target_host = getattr(rule, "_target_host", "127.0.0.1")
-        target_port = getattr(rule, "_target_port", 8000)
+        target_host = getattr(rule, "_target_host", None)
+        target_port = getattr(rule, "_target_port", None)
         target_ssl = getattr(rule, "_target_ssl", False)
         target_path_prefix = getattr(rule, "_target_path_prefix", "")
+
+        if (target_host is None or target_port is None) and rule.upstream_config and rule.upstream_config.targets:
+            target_cfg = rule.upstream_config.targets[0]
+            target_host = target_cfg.host
+            target_port = target_cfg.port
+
+        if not target_host:
+            target_host = "127.0.0.1"
+        if not target_port:
+            target_port = 8000
 
         path = scope.get("path", "/")
         if rule.strip_prefix and path.startswith(rule.path_pattern):
@@ -260,14 +282,16 @@ class PyProxyGateway:
 
         client = scope.get("client")
         client_ip = client[0] if client else "127.0.0.1"
+        if not headers_model.get("X-Forwarded-For"):
+            headers_model.set("X-Forwarded-For", client_ip)
 
         http_request = HTTPRequest(
             method=method,
             path=path,
+            target=path + (f"?{query_string}" if query_string else ""),
             query_string=query_string,
             headers=headers_model,
             body=request_body,
-            client_ip=client_ip,
         )
 
         # Run Pre-Request Middleware Pipeline (Auth, Rate Limit, Cache, Custom Plugins)
@@ -284,6 +308,7 @@ class PyProxyGateway:
         if query_string:
             forward_path = f"{forward_path}?{query_string}"
 
+        response_started = False
         try:
             reader, writer = await asyncio.wait_for(
                 asyncio.open_connection(
@@ -334,6 +359,7 @@ class PyProxyGateway:
                     resp_headers.append((k_str.encode("latin-1"), v_str.encode("latin-1")))
                     resp_headers_model.set(k_str, v_str)
 
+            response_started = True
             await send({
                 "type": "http.response.start",
                 "status": status_code,
@@ -352,7 +378,7 @@ class PyProxyGateway:
                     await send({
                         "type": "http.response.body",
                         "body": chunk,
-                        "more_body": remaining > 0,
+                        "more_body": True,
                     })
             else:
                 while True:
@@ -386,7 +412,8 @@ class PyProxyGateway:
 
         except Exception as exc:
             logger.error("ASGI Proxy error: %s", exc)
-            await self._send_502(send)
+            if not response_started:
+                await self._send_502(send)
 
     async def _send_http_response(self, response: HTTPResponse, send: Send) -> None:
         """Send a PyProxy HTTPResponse object through ASGI send."""
