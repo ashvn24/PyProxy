@@ -171,7 +171,7 @@
       max-width: 540px;
     }
 
-    /* Terminal Code Card */
+    /* Terminal Code Card (Straight, Untilted Mac Shell) */
     .hero-terminal {
       background: var(--code-bg);
       border-radius: var(--radius-md);
@@ -179,12 +179,36 @@
       overflow: hidden;
       max-width: 520px;
       margin-bottom: 36px;
-      transform: rotate(-1deg);
+      transform: none;
       transition: var(--transition);
     }
 
     .hero-terminal:hover {
-      transform: rotate(0deg) scale(1.02);
+      transform: translateY(-2px);
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 16px;
+      background-color: #38bdf8;
+      vertical-align: middle;
+      margin-left: 3px;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .pulse-ring {
+      animation: pulseGlow 1.5s infinite ease-out;
+    }
+
+    @keyframes pulseGlow {
+      0% { r: 6px; opacity: 0.8; }
+      100% { r: 18px; opacity: 0; }
     }
 
     .terminal-bar {
@@ -465,18 +489,140 @@
       display: block;
     }
 
-    /* Footer */
+    /* Footer Upgrade */
     footer {
       background: #ffffff;
       border-top: 1px solid var(--border-color);
-      padding: 60px 0 40px;
-      text-align: center;
+      padding: 70px 0 40px;
     }
 
-    .footer-text {
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+
+    @media (max-width: 992px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      footer {
+        padding: 50px 0 30px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 28px 16px;
+        margin-bottom: 32px;
+      }
+
+      .footer-brand {
+        grid-column: 1 / -1;
+        margin-bottom: 4px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .footer-brand-desc {
+        max-width: 100%;
+        font-size: 0.88rem;
+      }
+
+      .footer-products-col {
+        grid-column: 1 / -1;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-color);
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding-top: 24px;
+      }
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-brand-logo {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .footer-brand-desc {
       color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 12px;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    .footer-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .footer-col-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+    }
+
+    .footer-col-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col-links a {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .footer-col-links a:hover {
+      color: var(--accent-blue);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
     }
 
     .mobile-toggle {
@@ -699,20 +845,17 @@
           PyProxy is a production-grade, event-driven reverse proxy & load balancer built entirely in Python on <code>asyncio</code>.
         </p>
 
-        <!-- Dark Terminal Box -->
+        <!-- Dark Terminal Box (Mac Shell) -->
         <div class="hero-terminal">
           <div class="terminal-bar">
             <div class="dot dot-red"></div>
             <div class="dot dot-yellow"></div>
             <div class="dot dot-green"></div>
+            <span style="font-size: 0.75rem; color: #94a3b8; margin-left: auto; font-family: monospace;">bash — 80x24</span>
           </div>
-          <div class="terminal-code">
-            <div><span class="code-prompt"># Use as a Python Library (No config.yaml needed)</span></div>
-            <div><span class="keyword">from</span> pyproxy <span class="keyword">import</span> Proxy</div>
-            <div>proxy = <span class="code-func">Proxy</span>(port=<span class="code-str">8080</span>)</div>
-            <div>proxy.<span class="code-func">add_route</span>(<span class="code-str">"/api"</span>, targets=[(<span class="code-str">"127.0.0.1"</span>, <span class="code-str">8001</span>)])</div>
-            <div>proxy.<span class="code-func">run</span>()</div>
-            <div class="code-out">🚀 PyProxy engine initialized on 0.0.0.0:8080 (v0.1.3)</div>
+          <div class="terminal-code" id="terminalCode">
+            <div id="typedContent"></div>
+            <div id="typedOutput" class="code-out" style="display: none; margin-top: 8px;">🚀 PyProxy engine initialized on 0.0.0.0:8080 (v0.1.3)</div>
           </div>
         </div>
 
@@ -725,7 +868,7 @@
       <div class="perf-card">
         <div class="perf-header">
           <div class="perf-title">Network Performance</div>
-          <div class="perf-badge">Speed Increase ➔</div>
+          <div class="perf-badge" id="perfBadge">Speed Increase ➔</div>
         </div>
 
         <div class="chart-container">
@@ -735,19 +878,24 @@
             <line x1="0" y1="160" x2="400" y2="160" stroke="#e2e8f0" stroke-dasharray="4 4" />
             <line x1="0" y1="210" x2="400" y2="210" stroke="#0f172a" stroke-width="2" />
 
+            <!-- Baseline (Dark curve) -->
             <path d="M 10 180 C 40 120, 70 190, 100 130 C 130 160, 160 80, 190 140 C 220 180, 250 90, 280 110 C 310 130, 340 70, 370 120" 
                   stroke="#1e293b" stroke-width="3.5" stroke-linecap="round" />
 
-            <path d="M 10 180 C 50 170, 90 140, 130 140 C 170 140, 200 110, 240 100 C 280 90, 310 40, 350 20" 
-                  stroke="#2563eb" stroke-width="4" stroke-linecap="round" />
+            <!-- Dynamic Animated Blue Performance Line -->
+            <path id="perfBlueLine" d="M 10 180 C 50 170, 90 140, 130 140 C 170 140, 200 110, 240 100 C 280 90, 310 40, 350 20" 
+                  stroke="#2563eb" stroke-width="4.5" stroke-linecap="round" fill="none" />
 
-            <path d="M 240 100 C 280 90, 310 40, 350 20 L 350 210 L 240 210 Z" 
-                  fill="url(#blue-gradient)" opacity="0.15" />
+            <!-- Gradient Area beneath blue line -->
+            <path id="perfGradientFill" d="M 10 180 C 50 170, 90 140, 130 140 C 170 140, 200 110, 240 100 C 280 90, 310 40, 350 20 L 350 210 L 10 210 Z" 
+                  fill="url(#blue-gradient)" opacity="0" style="transition: opacity 0.5s ease;" />
 
-            <circle cx="240" cy="100" r="6" fill="#2563eb" />
-            <circle cx="240" cy="100" r="10" fill="#2563eb" opacity="0.3" />
-
-            <path d="M 342 12 L 352 20 L 344 32" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+            <!-- Shooting Arrow Head & Pulse Point at peak -->
+            <g id="perfArrowGroup" style="opacity: 0; transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.17, 0.67, 0.83, 0.67);">
+              <circle cx="350" cy="20" r="6" fill="#2563eb" />
+              <circle cx="350" cy="20" r="14" fill="#2563eb" opacity="0.3" class="pulse-ring" />
+              <path d="M 340 10 L 352 20 L 344 32" stroke="#2563eb" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+            </g>
 
             <defs>
               <linearGradient id="blue-gradient" x1="0" y1="0" x2="0" y2="1">
@@ -1011,11 +1159,66 @@ proxy.run()</code></pre>
   <!-- Footer -->
   <footer>
     <div class="container">
-      <p class="footer-text">PyProxy (<code>python-pyproxy</code>) is released under the MIT License.</p>
-      <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 6px;">
-        Created by <strong>Ashwin VK</strong> — Check out our other product: 
-        <a href="https://serverdeck.online" target="_blank" style="color: var(--accent-blue); font-weight: 700; text-decoration: underline; margin-left: 4px;">ServerDeck (serverdeck.online) ↗</a>
-      </p>
+      <div class="footer-grid">
+        
+        <!-- Brand Column -->
+        <div class="footer-brand">
+          <a href="#">
+            <img src="docs/logo/pyproxy.jpeg" alt="PyProxy" class="footer-brand-logo">
+          </a>
+          <p class="footer-brand-desc">
+            Production-grade, event-driven reverse proxy & load balancer built entirely in Python on <code>asyncio</code>.
+          </p>
+          <div class="footer-status">
+            <span class="status-dot"></span>
+            PyPI Release v0.1.3 Active
+          </div>
+        </div>
+
+        <!-- Column 1: Navigation -->
+        <div>
+          <h4 class="footer-col-title">Navigation</h4>
+          <ul class="footer-col-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="#roadmap">Roadmap & Gateway</a></li>
+            <li><a href="#config">YAML & Python Examples</a></li>
+            <li><a href="#versions">Releases</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 2: Ecosystem -->
+        <div>
+          <h4 class="footer-col-title">Ecosystem</h4>
+          <ul class="footer-col-links">
+            <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI Package (python-pyproxy) ↗</a></li>
+            <li><a href="https://github.com/ashvn24/PyProxy" target="_blank">GitHub Repository ↗</a></li>
+            <li><a href="https://github.com/ashvn24/PyProxy/blob/main/LICENSE" target="_blank">MIT License ↗</a></li>
+            <li><a href="https://github.com/ashvn24/PyProxy/releases" target="_blank">Changelog ↗</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Featured Product -->
+        <div class="footer-products-col">
+          <h4 class="footer-col-title">Our Products</h4>
+          <ul class="footer-col-links">
+            <li><strong style="color: var(--text-dark); font-size: 0.9rem;">ServerDeck</strong></li>
+            <li style="font-size: 0.85rem; color: var(--text-muted);">Cloud Infrastructure Management</li>
+            <li style="margin-top: 4px;">
+              <a href="https://serverdeck.online" target="_blank" style="color: var(--accent-blue); font-weight: 700;">
+                serverdeck.online ↗
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Footer Bottom Bar -->
+      <div class="footer-bottom">
+        <p>© 2026 PyProxy (<code>python-pyproxy</code>). Created by <strong>Ashwin VK</strong> under the MIT License.</p>
+        <p style="font-size: 0.85rem;">Built with Python <code>asyncio</code> & non-blocking TCP sockets.</p>
+      </div>
     </div>
   </footer>
 
@@ -1044,6 +1247,109 @@ proxy.run()</code></pre>
         if (navLinks) navLinks.classList.remove('active');
       });
     });
+
+    // Terminal Typing & Performance Curve Synchronization Animation
+    (function initHeroSyncAnimation() {
+      const typedContent = document.getElementById('typedContent');
+      const typedOutput = document.getElementById('typedOutput');
+      const perfBlueLine = document.getElementById('perfBlueLine');
+      const perfGradientFill = document.getElementById('perfGradientFill');
+      const perfArrowGroup = document.getElementById('perfArrowGroup');
+      const perfBadge = document.getElementById('perfBadge');
+
+      if (!typedContent || !perfBlueLine) return;
+
+      const lines = [
+        { html: '<span class="code-prompt"># Use as a Python Library (No config.yaml needed)</span>' },
+        { html: '<span class="keyword" style="color: #f472b6;">from</span> pyproxy <span class="keyword" style="color: #f472b6;">import</span> Proxy' },
+        { html: 'proxy = <span class="code-func" style="color: #60a5fa;">Proxy</span>(port=<span class="code-str" style="color: #fde047;">8080</span>)' },
+        { html: 'proxy.<span class="code-func" style="color: #60a5fa;">add_route</span>(<span class="code-str" style="color: #fde047;">"/api"</span>, targets=[(<span class="code-str" style="color: #fde047;">"127.0.0.1"</span>, <span class="code-str" style="color: #fde047;">8001</span>)])' },
+        { html: 'proxy.<span class="code-func" style="color: #60a5fa;">run</span>()' }
+      ];
+
+      const pathLength = perfBlueLine.getTotalLength ? perfBlueLine.getTotalLength() : 420;
+      perfBlueLine.style.strokeDasharray = pathLength;
+      
+      let lineIndex = 0;
+      let charIndex = 0;
+      let timeoutId = null;
+
+      function resetAnimation() {
+        typedContent.innerHTML = '';
+        typedOutput.style.display = 'none';
+        perfGradientFill.style.opacity = '0';
+        perfArrowGroup.style.opacity = '0';
+        perfArrowGroup.style.transform = 'scale(0.5)';
+        perfBadge.innerHTML = 'Speed Increase ➔';
+        perfBadge.style.background = 'rgba(37, 99, 235, 0.08)';
+        perfBadge.style.color = 'var(--accent-blue)';
+        
+        perfBlueLine.style.strokeDashoffset = pathLength;
+        lineIndex = 0;
+        charIndex = 0;
+      }
+
+      function typeNextChar() {
+        if (lineIndex >= lines.length) {
+          typedOutput.style.display = 'block';
+          
+          perfBlueLine.style.transition = 'stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+          perfBlueLine.style.strokeDashoffset = '0';
+          
+          setTimeout(() => {
+            perfGradientFill.style.opacity = '0.2';
+            perfArrowGroup.style.opacity = '1';
+            perfArrowGroup.style.transform = 'scale(1)';
+            perfBadge.innerHTML = '⚡ +300% Speed Surge';
+            perfBadge.style.background = 'rgba(16, 185, 129, 0.15)';
+            perfBadge.style.color = '#10b981';
+          }, 300);
+
+          timeoutId = setTimeout(() => {
+            resetAnimation();
+            setTimeout(typeNextChar, 500);
+          }, 5000);
+          return;
+        }
+
+        const currentLineObj = lines[lineIndex];
+        const plainText = currentLineObj.html.replace(/<[^>]*>/g, '');
+
+        charIndex++;
+        
+        let htmlBuffer = '';
+        for (let i = 0; i < lineIndex; i++) {
+          htmlBuffer += '<div>' + lines[i].html + '</div>';
+        }
+        
+        const partialText = plainText.substring(0, charIndex);
+        htmlBuffer += '<div>' + partialText + '<span class="cursor-blink"></span></div>';
+        typedContent.innerHTML = htmlBuffer;
+
+        const totalChars = lines.reduce((acc, l) => acc + l.html.replace(/<[^>]*>/g, '').length, 0);
+        let charsTypedSoFar = 0;
+        for (let i = 0; i < lineIndex; i++) {
+          charsTypedSoFar += lines[i].html.replace(/<[^>]*>/g, '').length;
+        }
+        charsTypedSoFar += charIndex;
+
+        const progress = Math.min(1, charsTypedSoFar / totalChars);
+        const targetOffset = pathLength * (1 - (progress * 0.75));
+        perfBlueLine.style.transition = 'stroke-dashoffset 0.08s linear';
+        perfBlueLine.style.strokeDashoffset = targetOffset;
+
+        if (charIndex >= plainText.length) {
+          lineIndex++;
+          charIndex = 0;
+          timeoutId = setTimeout(typeNextChar, 350);
+        } else {
+          timeoutId = setTimeout(typeNextChar, Math.random() * 25 + 15);
+        }
+      }
+
+      resetAnimation();
+      setTimeout(typeNextChar, 600);
+    })();
   </script>
 </body>
 </html>
