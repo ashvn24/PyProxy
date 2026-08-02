@@ -35,9 +35,10 @@ class TestFullProxyIntegration:
             response = (
                 b"HTTP/1.1 200 OK\r\n"
                 b"Content-Type: text/plain\r\n"
-                f"Content-Length: {len(body)}\r\n"
-                b"Connection: close\r\n"
-                b"\r\n" + body
+                + f"Content-Length: {len(body)}\r\n".encode("latin-1")
+                + b"Connection: close\r\n"
+                + b"\r\n"
+                + body
             )
             writer.write(response)
             await writer.drain()
@@ -69,10 +70,10 @@ class TestFullProxyIntegration:
         reader, writer = await asyncio.open_connection(proxy_host, proxy_port)
         req_data = (
             b"GET /api/hello HTTP/1.1\r\n"
-            f"Host: {proxy_host}:{proxy_port}\r\n"
-            b"User-Agent: PytestClient/1.0\r\n"
-            b"Connection: close\r\n"
-            b"\r\n"
+            + f"Host: {proxy_host}:{proxy_port}\r\n".encode("latin-1")
+            + b"User-Agent: PytestClient/1.0\r\n"
+            + b"Connection: close\r\n"
+            + b"\r\n"
         )
         writer.write(req_data)
         await writer.drain()
