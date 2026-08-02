@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "python-pyproxy"
-dynamic = ["version"]
+version = "0.2.0"
 description = "A modern, production-grade reverse proxy built on Python asyncio."
 readme = "README.md"
 license = "MIT"
@@ -79,10 +79,6 @@ pyproxy = "pyproxy.cli:cli_entry_point"
 # ---------------------------------------------------------------------------
 # Hatch
 # ---------------------------------------------------------------------------
-[tool.hatch.version]
-source = "vcs"
-fallback-version = "0.2.0"
-raw-options = { local_scheme = "no-local-version" }
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pyproxy"]
