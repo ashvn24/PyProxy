@@ -20,6 +20,7 @@ from __future__ import annotations
 
 from importlib.metadata import PackageNotFoundError, version
 
+from pyproxy.asgi import PyProxyGateway, PyProxyRouter
 from pyproxy.proxy_app import Proxy
 
 try:
@@ -32,5 +33,7 @@ except PackageNotFoundError:  # pragma: no cover
 
 __all__: list[str] = [
     "Proxy",
+    "PyProxyGateway",
+    "PyProxyRouter",
     "__version__",
 ]

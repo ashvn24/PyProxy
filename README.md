@@ -37,7 +37,35 @@ ground up — no frameworks, no shortcuts.
 pip install python-pyproxy
 ```
 
-### Configuration
+### FastAPI / ASGI Gateway Integration (v0.2.0)
+
+Mount PyProxy as a centralized microservice gateway directly inside FastAPI or Starlette with full plugin support (Auth, JWT, Rate Limiting, Caching):
+
+```python
+from fastapi import FastAPI
+from pyproxy.asgi import PyProxyGateway
+from pyproxy.auth import AuthMiddleware
+
+app = FastAPI(title="Central Microservice Gateway")
+
+# Mount PyProxy as ASGI Gateway middleware
+app.add_middleware(
+    PyProxyGateway,
+    routes=[
+        {"path": "/users", "target": "http://127.0.0.1:8001"},
+        {"path": "/orders", "target": "http://127.0.0.1:8002", "strip_prefix": True},
+    ],
+    auth=AuthMiddleware(valid_api_keys={"secret-key-123"}),
+    rate_limit=100, # Rate limiting (100 req/min per IP)
+    enable_caching=True, # Response TTL caching
+)
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy", "gateway": "PyProxy v0.2.0"}
+```
+
+### YAML / CLI Proxy Server Quick Start
 
 Create a `config.yaml`:
 
@@ -52,19 +80,13 @@ routes:
       targets:
         - host: "127.0.0.1"
           port: 3000
-
-logging:
-  level: "info"
-  format: "json"
 ```
 
-### Start the Proxy
+Start via CLI or Python:
 
 ```bash
 pyproxy start config.yaml
 ```
-
-### Programmatic Usage
 
 ```python
 from pyproxy import Proxy
@@ -72,6 +94,49 @@ from pyproxy import Proxy
 proxy = Proxy(config_path="config.yaml")
 proxy.run()
 ```
+
+#### Advanced FastAPI Gateway & Plugin Configuration
+
+```python
+from fastapi import FastAPI
+from pyproxy.asgi import PyProxyGateway
+from pyproxy.auth import AuthMiddleware
+from pyproxy.middleware import BaseMiddleware
+from pyproxy.protocol import HTTPRequest, HTTPResponse
+
+# Custom JWT Authentication Plugin
+class JWTAuthPlugin(BaseMiddleware):
+    async def process_request(self, request: HTTPRequest) -> HTTPRequest | HTTPResponse | None:
+        token = request.headers.get("Authorization", "").replace("Bearer ", "")
+        if token != "secret-jwt-token":
+            return HTTPResponse.create_error(401, "Invalid JWT Token") # Short-circuit
+        return None
+
+app = FastAPI(title="Central Microservice Gateway")
+
+# Mount PyProxy as ASGI middleware with full Plugin pipeline
+app.add_middleware(
+    PyProxyGateway,
+    routes=[
+        {"path": "/users", "target": "http://127.0.0.1:8001"},
+        {"path": "/orders", "target": "http://127.0.0.1:8002"},
+    ],
+    middlewares=[JWTAuthPlugin()], # Custom JWT Auth plugin
+    auth=AuthMiddleware(valid_api_keys={"my-key"}), # API Key Auth plugin
+    rate_limit=60, # Rate limiting plugin (60 req/min per IP)
+    enable_caching=True, # In-memory TTL caching plugin
+)
+```
+
+#### FastAPI Gateway Plugin Usage Guide
+
+| Plugin | When to Use | How to Use |
+| :--- | :--- | :--- |
+| **JWT / OAuth** | Protect backend microservices behind FastAPI with token verification. | Subclass `BaseMiddleware`, override `process_request()`, pass to `middlewares=[...]`. |
+| **API Keys & Basic Auth** | Service-to-service auth or developer API endpoints. | Pass `auth=AuthMiddleware(valid_api_keys={...})` into `PyProxyGateway`. |
+| **Rate Limiting** | Prevent API abuse and DDoS attacks per client IP. | Set `rate_limit=60` (requests per minute per IP) in `PyProxyGateway`. |
+| **In-Memory Caching** | Deliver sub-millisecond responses for read-heavy GET routes. | Set `enable_caching=True` in `PyProxyGateway`. |
+| **Audit & Header Hooks** | Inject correlation IDs (`X-Correlation-ID`) or response signatures. | Subclass `BaseMiddleware`, override `process_request()` / `process_response()`. |
 
 ## Configuration
 

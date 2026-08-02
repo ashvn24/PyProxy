@@ -287,11 +287,99 @@
       box-sizing: border-box;
     }
 
-    pre, code {
-      max-width: 100%;
-      white-space: pre-wrap;
-      word-break: break-word;
-      overflow-wrap: anywhere;
+    /* Footer */
+    footer {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      padding: 70px 0 40px;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 50px;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .footer-brand-logo {
+      height: 42px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .footer-brand-desc {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      max-width: 320px;
+    }
+
+    .footer-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    .footer-col-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dark);
+      margin-bottom: 16px;
+    }
+
+    .footer-col-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-col-links a {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .footer-col-links a:hover {
+      color: var(--accent-blue);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
     }
 
     @media (max-width: 992px) {
@@ -522,6 +610,7 @@
           <div class="sidebar-title">Getting Started</div>
           <ul class="sidebar-menu">
             <li><a href="#overview">Overview & Installation</a></li>
+            <li><a href="#fastapi-quickstart">FastAPI Gateway Quickstart (v0.2.0)</a></li>
             <li><a href="#cli">CLI Commands</a></li>
           </ul>
         </div>
@@ -544,7 +633,8 @@
             <li><a href="#compression">13. Compression Engine</a></li>
             <li><a href="#auth">14. Authentication</a></li>
             <li><a href="#security">15. Security & Rate Limiting</a></li>
-            <li><a href="#roadmap">16. Roadmap & FastAPI Gateway</a></li>
+            <li><a href="#roadmap">16. Roadmap & Centralized FastAPI Gateway</a></li>
+            <li><a href="#fastapi-plugins">17. FastAPI Gateway Plugins</a></li>
           </ul>
         </div>
       </div>
@@ -555,7 +645,7 @@
       
       <!-- Section: Overview -->
       <section id="overview" class="doc-section">
-        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.1.3</span></h1>
+        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.2.0</span></h1>
         <p class="doc-lead">
           PyProxy (published as <strong>python-pyproxy</strong> on PyPI) is a high-performance reverse proxy and load balancer built entirely from scratch in Python on <code>asyncio</code>.
         </p>
@@ -566,6 +656,57 @@
           </div>
           <div class="code-tab-content active">
 <pre><code>pip install python-pyproxy</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: FastAPI Quickstart (First Visible) -->
+      <section id="fastapi-quickstart" class="doc-section">
+        <h2 class="doc-title">FastAPI Gateway Quickstart <span class="doc-badge">v0.2.0</span></h2>
+        <p class="doc-lead">Mount PyProxy directly inside your FastAPI or Starlette application to act as a centralized microservice gateway with built-in JWT/Auth, rate limiting, and response caching.</p>
+
+        <div class="code-card">
+          <div class="code-tabs-header">
+            <button class="code-tab-btn active" onclick="switchSectionTab(this, 'fastapi-quickstart-tab')">FastAPI Integration</button>
+            <button class="code-tab-btn" onclick="switchSectionTab(this, 'fastapi-router-tab')">FastAPI PyProxyRouter</button>
+          </div>
+
+          <div id="fastapi-quickstart-tab" class="code-tab-content active">
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pyproxy.asgi <span class="kw">import</span> PyProxyGateway
+<span class="kw">from</span> pyproxy.auth <span class="kw">import</span> AuthMiddleware
+
+app = FastAPI(title=<span class="str">"Central Microservice Gateway"</span>)
+
+<span class="cm"># Mount PyProxy as ASGI Gateway middleware with full plugin support</span>
+app.add_middleware(
+    PyProxyGateway,
+    routes=[
+        {<span class="str">"path"</span>: <span class="str">"/users"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8001"</span>},
+        {<span class="str">"path"</span>: <span class="str">"/orders"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8002"</span>, <span class="str">"strip_prefix"</span>: True},
+    ],
+    auth=AuthMiddleware(valid_api_keys={<span class="str">"secret-key-123"</span>}),
+    rate_limit=100, <span class="cm"># 100 req/min per IP</span>
+    enable_caching=True, <span class="cm"># In-memory TTL cache</span>
+)
+
+<span class="kw">@app.get</span>(<span class="str">"/health"</span>)
+<span class="kw">def</span> <span class="fn">health_check</span>():
+    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"healthy"</span>, <span class="str">"gateway"</span>: <span class="str">"PyProxy v0.2.0"</span>}</code></pre>
+          </div>
+
+          <div id="fastapi-router-tab" class="code-tab-content">
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pyproxy.asgi <span class="kw">import</span> PyProxyRouter
+
+app = FastAPI()
+proxy_router = PyProxyRouter()
+
+<span class="cm"># Dynamically add proxy targets</span>
+proxy_router.add_route(<span class="str">"/api/v1/auth"</span>, target=<span class="str">"http://auth-service:8001"</span>)
+proxy_router.add_route(<span class="str">"/api/v1/payments"</span>, target=<span class="str">"http://payment-service:8002"</span>)
+
+app.mount(<span class="str">"/proxy"</span>, proxy_router.gateway)</code></pre>
           </div>
         </div>
       </section>
@@ -915,6 +1056,174 @@ app.add_middleware(
         </div>
       </section>
 
+      <!-- Section 17: FastAPI Gateway Plugins -->
+      <section id="fastapi-plugins" class="doc-section">
+        <h2 class="doc-title">17. FastAPI & ASGI Gateway Plugins <span class="doc-badge">v0.2.0</span></h2>
+        <p class="doc-lead">Complete guide for mounting PyProxy as a FastAPI gateway with built-in and custom plugins (JWT, Auth, Rate Limiting, Caching, CORS, and Audit Hooks).</p>
+
+        <!-- Plugin 1: JWT & Custom Auth Plugin -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 28px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">1. JWT & Custom Auth Plugin</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px;">
+            <strong>When to Use:</strong> Protect backend microservices behind FastAPI using custom JWTs or token validation. Short-circuits with <code>401 Unauthorized</code> before forwarding traffic.
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+            <strong>How to Use:</strong> Subclass <code>BaseMiddleware</code>, implement <code>process_request()</code>, and pass to <code>PyProxyGateway(middlewares=[...])</code>.
+          </p>
+          <div class="code-card" style="margin: 0;">
+            <div class="code-tabs-header">
+              <button class="code-tab-btn active">JWT Auth Plugin Example</button>
+            </div>
+            <div class="code-tab-content active">
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pyproxy.asgi <span class="kw">import</span> PyProxyGateway
+<span class="kw">from</span> pyproxy.middleware <span class="kw">import</span> BaseMiddleware
+<span class="kw">from</span> pyproxy.protocol <span class="kw">import</span> HTTPRequest, HTTPResponse
+
+<span class="kw">class</span> <span class="fn">JWTAuthPlugin</span>(BaseMiddleware):
+    <span class="kw">async def</span> <span class="fn">process_request</span>(self, request: HTTPRequest) -> HTTPRequest | HTTPResponse | None:
+        token = request.headers.get(<span class="str">"Authorization"</span>, <span class="str">""</span>).replace(<span class="str">"Bearer "</span>, <span class="str">""</span>)
+        <span class="kw">if not</span> token <span class="kw">or</span> token != <span class="str">"secret-jwt-token"</span>:
+            <span class="kw">return</span> HTTPResponse.create_error(401, <span class="str">"Invalid or expired JWT token"</span>)
+        <span class="kw">return None</span>
+
+app = FastAPI()
+app.add_middleware(
+    PyProxyGateway,
+    routes=[{<span class="str">"path"</span>: <span class="str">"/secure"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8001"</span>}],
+    middlewares=[JWTAuthPlugin()]
+)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plugin 2: API Keys & Basic Auth -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 28px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">2. API Keys & Basic Auth Plugin</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px;">
+            <strong>When to Use:</strong> For internal service-to-service communication or developer API endpoints that rely on static API keys or HTTP Basic Auth credentials.
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+            <strong>How to Use:</strong> Pass an <code>AuthMiddleware</code> instance to <code>PyProxyGateway(auth=...)</code>.
+          </p>
+          <div class="code-card" style="margin: 0;">
+            <div class="code-tabs-header">
+              <button class="code-tab-btn active">API Key & Basic Auth Example</button>
+            </div>
+            <div class="code-tab-content active">
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pyproxy.asgi <span class="kw">import</span> PyProxyGateway
+<span class="kw">from</span> pyproxy.auth <span class="kw">import</span> AuthMiddleware
+
+app = FastAPI()
+app.add_middleware(
+    PyProxyGateway,
+    routes=[{<span class="str">"path"</span>: <span class="str">"/v1"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8002"</span>}],
+    auth=AuthMiddleware(
+        valid_api_keys={<span class="str">"key-secret-123"</span>},
+        basic_credentials={<span class="str">"admin"</span>: <span class="str">"secret123"</span>}
+    )
+)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plugin 3: Rate Limiting Plugin -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 28px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">3. Rate Limiting Plugin</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px;">
+            <strong>When to Use:</strong> Protect downstream microservices from DDoS attacks or API abuse by capping max requests per minute per IP.
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+            <strong>How to Use:</strong> Specify <code>rate_limit=60</code> (requests per minute) in <code>PyProxyGateway</code>.
+          </p>
+          <div class="code-card" style="margin: 0;">
+            <div class="code-tabs-header">
+              <button class="code-tab-btn active">Rate Limiter Example</button>
+            </div>
+            <div class="code-tab-content active">
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pyproxy.asgi <span class="kw">import</span> PyProxyGateway
+
+app = FastAPI()
+app.add_middleware(
+    PyProxyGateway,
+    routes=[{<span class="str">"path"</span>: <span class="str">"/public"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8003"</span>}],
+    rate_limit=60 <span class="cm"># Max 60 requests per minute per IP (HTTP 429)</span>
+)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plugin 4: Response Caching Plugin -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px; margin-bottom: 28px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">4. In-Memory Caching Plugin</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px;">
+            <strong>When to Use:</strong> Deliver sub-millisecond responses for read-heavy endpoints and eliminate backend database load.
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+            <strong>How to Use:</strong> Set <code>enable_caching=True</code> in <code>PyProxyGateway</code>.
+          </p>
+          <div class="code-card" style="margin: 0;">
+            <div class="code-tabs-header">
+              <button class="code-tab-btn active">Response Cache Example</button>
+            </div>
+            <div class="code-tab-content active">
+<pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pyproxy.asgi <span class="kw">import</span> PyProxyGateway
+
+app = FastAPI()
+app.add_middleware(
+    PyProxyGateway,
+    routes=[{<span class="str">"path"</span>: <span class="str">"/catalog"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8004"</span>}],
+    enable_caching=True <span class="cm"># Automatic TTL caching and 304 conditional responses</span>
+)</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <!-- Plugin 5: Custom Audit & Header Transformation Plugin -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 24px;">
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-dark); margin-bottom: 8px;">5. Custom Header Transformation & Audit Plugin</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 8px;">
+            <strong>When to Use:</strong> Inject correlation IDs, audit headers, or transform response headers before returning to the client.
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+            <strong>How to Use:</strong> Subclass <code>BaseMiddleware</code> and override <code>process_request()</code> and <code>process_response()</code>.
+          </p>
+          <div class="code-card" style="margin: 0;">
+            <div class="code-tabs-header">
+              <button class="code-tab-btn active">Header Transformation Example</button>
+            </div>
+            <div class="code-tab-content active">
+<pre><code><span class="kw">import</span> uuid
+<span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> pyproxy.asgi <span class="kw">import</span> PyProxyGateway
+<span class="kw">from</span> pyproxy.middleware <span class="kw">import</span> BaseMiddleware
+<span class="kw">from</span> pyproxy.protocol <span class="kw">import</span> HTTPRequest, HTTPResponse
+
+<span class="kw">class</span> <span class="fn">CorrelationIDPlugin</span>(BaseMiddleware):
+    <span class="kw">async def</span> <span class="fn">process_request</span>(self, request: HTTPRequest) -> HTTPRequest | HTTPResponse | None:
+        <span class="kw">if not</span> request.headers.get(<span class="str">"X-Correlation-ID"</span>):
+            request.headers.set(<span class="str">"X-Correlation-ID"</span>, str(uuid.uuid4()))
+        <span class="kw">return</span> request
+
+    <span class="kw">async def</span> <span class="fn">process_response</span>(self, request: HTTPRequest, response: HTTPResponse) -> HTTPResponse:
+        response.headers.set(<span class="str">"X-Gateway-Engine"</span>, <span class="str">"PyProxy-v0.2.0"</span>)
+        <span class="kw">return</span> response
+
+app = FastAPI()
+app.add_middleware(
+    PyProxyGateway,
+    routes=[{<span class="str">"path"</span>: <span class="str">"/api"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8005"</span>}],
+    middlewares=[CorrelationIDPlugin()]
+)</code></pre>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
     </main>
 
   </div>
@@ -934,7 +1243,7 @@ app.add_middleware(
           </p>
           <div class="footer-status">
             <span class="status-dot"></span>
-            PyPI Release v0.1.3 Active
+            PyPI v0.1.3 Live • v0.2.0 Launches Tomorrow 8 PM
           </div>
         </div>
 
