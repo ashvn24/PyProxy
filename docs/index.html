@@ -375,30 +375,50 @@
       display: block;
     }
 
-    /* Releases Timeline */
+    /* Releases Timeline / Expandable Accordions */
     .release-timeline {
       max-width: 800px;
       margin: 0 auto;
+      width: 100%;
     }
 
     .release-item {
       background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 32px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .release-item:hover {
+      border-color: var(--border-hover);
     }
 
     .release-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      padding: 24px 28px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.2s ease;
+    }
+
+    .release-header:hover {
+      background-color: #f8fafc;
+    }
+
+    .release-version-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     .release-version {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 800;
       color: var(--text-dark);
       display: flex;
@@ -420,9 +440,29 @@
       color: var(--text-light);
     }
 
+    .release-chevron {
+      color: var(--text-light);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      flex-shrink: 0;
+    }
+
+    .release-item.active .release-chevron {
+      transform: rotate(180deg);
+      color: var(--accent-blue);
+    }
+
     .release-body {
+      display: none;
+      padding: 0 28px 24px;
       color: var(--text-muted);
       font-size: 0.95rem;
+      line-height: 1.7;
+      border-top: 1px solid var(--border-color);
+      padding-top: 20px;
+    }
+
+    .release-item.active .release-body {
+      display: block;
     }
 
     /* Footer */
@@ -601,13 +641,11 @@
         padding: 18px 16px;
         font-size: 0.82rem;
       }
-      .release-item {
-        padding: 24px 18px;
-      }
       .release-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
+        padding: 18px 20px;
+      }
+      .release-body {
+        padding: 16px 20px 20px;
       }
     }
 
@@ -898,14 +936,24 @@ proxy.run()</code></pre>
   <!-- Releases -->
   <section id="versions">
     <div class="container">
+      <div style="text-align: center; max-width: 760px; margin: 0 auto 40px;">
+        <h2 style="font-size: 2.2rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px;">Release History</h2>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">Click on any version card to inspect release notes and feature highlights.</p>
+      </div>
+
       <div class="release-timeline">
-        <div class="release-item">
-          <div class="release-header">
-            <div class="release-version">
-              v0.1.3
-              <span class="badge-latest">PyPI Live</span>
+        <div class="release-item active">
+          <div class="release-header" onclick="toggleRelease(this)">
+            <div class="release-version-meta">
+              <div class="release-version">
+                v0.1.3
+                <span class="badge-latest">PyPI Live</span>
+              </div>
+              <div class="release-date">August 2026</div>
             </div>
-            <div class="release-date">August 2026</div>
+            <svg class="release-chevron" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
           </div>
           <div class="release-body">
             Programmatic Python Library API (<code>Proxy(port=8080)</code>, <code>proxy.add_route()</code>, raw Python dict configs), In-Memory TTL Response Caching with auto-invalidation, Token Bucket Rate Limiting, and Windows proactor connection reset fixes.
@@ -913,9 +961,14 @@ proxy.run()</code></pre>
         </div>
 
         <div class="release-item">
-          <div class="release-header">
-            <div class="release-version">v0.1.2</div>
-            <div class="release-date">August 2026</div>
+          <div class="release-header" onclick="toggleRelease(this)">
+            <div class="release-version-meta">
+              <div class="release-version">v0.1.2</div>
+              <div class="release-date">August 2026</div>
+            </div>
+            <svg class="release-chevron" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
           </div>
           <div class="release-body">
             Broadened Python compatibility (Python >= 3.11). Published package on PyPI as <code>python-pyproxy</code>. Added PEP 440 build configuration.
@@ -923,9 +976,14 @@ proxy.run()</code></pre>
         </div>
 
         <div class="release-item">
-          <div class="release-header">
-            <div class="release-version">v0.1.1</div>
-            <div class="release-date">August 2026</div>
+          <div class="release-header" onclick="toggleRelease(this)">
+            <div class="release-version-meta">
+              <div class="release-version">v0.1.1</div>
+              <div class="release-date">August 2026</div>
+            </div>
+            <svg class="release-chevron" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
           </div>
           <div class="release-body">
             Updated PyPI metadata, documentation links, repository URLs, and author configuration.
@@ -933,9 +991,14 @@ proxy.run()</code></pre>
         </div>
 
         <div class="release-item">
-          <div class="release-header">
-            <div class="release-version">v0.1.0</div>
-            <div class="release-date">August 2026</div>
+          <div class="release-header" onclick="toggleRelease(this)">
+            <div class="release-version-meta">
+              <div class="release-version">v0.1.0</div>
+              <div class="release-date">August 2026</div>
+            </div>
+            <svg class="release-chevron" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
           </div>
           <div class="release-body">
             Initial release of all 15 core phases: TCP server, HTTP parser, response builder, router, load balancer, health checker, TLS, WebSockets, middleware, caching, compression, auth, and security.
@@ -968,6 +1031,11 @@ proxy.run()</code></pre>
     function toggleMenu() {
       const navLinks = document.getElementById('navLinks');
       navLinks.classList.toggle('active');
+    }
+
+    function toggleRelease(headerEl) {
+      const item = headerEl.closest('.release-item');
+      item.classList.toggle('active');
     }
 
     document.querySelectorAll('.nav-links a').forEach(link => {
