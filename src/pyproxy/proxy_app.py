@@ -305,7 +305,7 @@ class Proxy:
 
     def run(self) -> None:
         """Run the PyProxy server synchronously (blocking)."""
-        async def main_runner():
+        async def main_runner() -> None:
             await self.start()
             if self.tcp_server:
                 await self.tcp_server.serve_forever()

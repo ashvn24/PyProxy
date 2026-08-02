@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import AsyncGenerator
 from typing import TYPE_CHECKING
 
 from pyproxy.exceptions.protocol import HttpParseError
@@ -201,7 +202,7 @@ class ProxyEngine:
                     resp_headers.add(name.strip(), val.strip())
 
             # 5. Create streaming response body iterator
-            async def stream_upstream_body():
+            async def stream_upstream_body() -> AsyncGenerator[bytes, None]:
                 nonlocal reusable
                 try:
                     content_len_str = resp_headers.get("Content-Length")

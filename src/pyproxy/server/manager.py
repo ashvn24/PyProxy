@@ -86,7 +86,7 @@ class ConnectionManager:
                 len(self._connections),
             )
 
-    async def close_all(self, timeout: float = 10.0) -> int:
+    async def close_all(self, timeout: float = 10.0) -> int:  # noqa: ASYNC109
         """Close all tracked active connections within a timeout duration.
 
         Args:

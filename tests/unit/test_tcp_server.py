@@ -107,16 +107,24 @@ class TestTCPServerUnit:
 def unittest_mock_writer() -> asyncio.StreamWriter:
     """Create a lightweight mock StreamWriter for unit tests."""
     class DummyTransport(asyncio.Transport):
-        def get_extra_info(self, name, default=None):
+        def __init__(self) -> None:
+            self._closing = False
+
+        def get_extra_info(self, name: str, default: object = None) -> object:
             if name == "peername":
                 return ("127.0.0.1", 12345)
             return default
-        def is_closing(self):
-            return False
-        def close(self):
-            pass
+
+        def is_closing(self) -> bool:
+            return self._closing
+
+        def close(self) -> None:
+            self._closing = True
 
     transport = DummyTransport()
     protocol = asyncio.StreamReaderProtocol(asyncio.StreamReader())
-    loop = asyncio.get_event_loop()
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = asyncio.get_event_loop_policy().get_event_loop()
     return asyncio.StreamWriter(transport, protocol, None, loop)

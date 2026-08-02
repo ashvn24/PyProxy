@@ -421,7 +421,7 @@ class PyProxyGateway:
         raw_headers: list[tuple[bytes, bytes]] = [
             (k.encode("latin-1"), v.encode("latin-1")) for k, v in response.headers.items()
         ]
-        body_bytes = response.body if isinstance(response.body, bytes) else response.body.encode("utf-8")
+        body_bytes = response.body if isinstance(response.body, bytes) else response.body.encode()
         if "content-length" not in response.headers:
             raw_headers.append((b"content-length", str(len(body_bytes)).encode("latin-1")))
 

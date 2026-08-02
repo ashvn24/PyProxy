@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import gzip
+
 import pytest
 
 from pyproxy.compression import Compressor

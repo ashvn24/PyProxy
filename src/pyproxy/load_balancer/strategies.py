@@ -138,5 +138,5 @@ class IPHashStrategy:
             raise UpstreamError("No healthy upstream targets available")
 
         key = client_ip or (request.host if request else "") or "default"
-        hash_value = int(hashlib.md5(key.encode("utf-8")).hexdigest(), 16)
+        hash_value = int(hashlib.md5(key.encode(), usedforsecurity=False).hexdigest(), 16)
         return healthy_targets[hash_value % len(healthy_targets)]

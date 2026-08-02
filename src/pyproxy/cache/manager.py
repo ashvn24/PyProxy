@@ -36,7 +36,7 @@ class CacheManager:
     def compute_cache_key(request: HTTPRequest) -> str:
         """Generate unique cache key for a request based on method and target path."""
         raw_key = f"GET:{request.target}"
-        return hashlib.md5(raw_key.encode("utf-8")).hexdigest()
+        return hashlib.md5(raw_key.encode(), usedforsecurity=False).hexdigest()
 
     @staticmethod
     def generate_etag(body: bytes) -> str:
@@ -48,7 +48,7 @@ class CacheManager:
         Returns:
             Quoted ETag string (e.g. '"a1b2c3d4"').
         """
-        digest = hashlib.md5(body).hexdigest()[:16]
+        digest = hashlib.md5(body, usedforsecurity=False).hexdigest()[:16]
         return f'"{digest}"'
 
     def process_conditional_request(

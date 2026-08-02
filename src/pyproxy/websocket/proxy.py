@@ -40,7 +40,7 @@ class WebSocketProxy:
             Base64 encoded SHA-1 digest string.
         """
         combined = sec_key.strip().encode("ascii") + _WEBSOCKET_GUID
-        digest = hashlib.sha1(combined).digest()
+        digest = hashlib.sha1(combined, usedforsecurity=False).digest()
         return base64.b64encode(digest).decode("ascii")
 
     async def proxy_websocket(

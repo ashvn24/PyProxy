@@ -242,7 +242,7 @@ class ConfigLoader:
             ConfigParseError: On TOML syntax errors.
         """
         if isinstance(raw_data, str):
-            raw_data = raw_data.encode("utf-8")
+            raw_data = raw_data.encode()
 
         try:
             result = tomllib.loads(raw_data.decode("utf-8"))
