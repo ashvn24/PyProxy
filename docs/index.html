@@ -611,33 +611,41 @@
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 1000px; margin: 0 auto;">
         
         <!-- Left: What's New in v0.1.3 -->
-        <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 36px; box-shadow: var(--shadow-sm);">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-            <span style="background: #dbeafe; color: #1e40af; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;">v0.1.3 Features</span>
-            <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-dark);">Recent Enhancements</h3>
+        <div class="feature-card" style="width: 100%;">
+          <svg class="feature-svg-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+          </svg>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <span style="background: rgba(37, 99, 235, 0.08); color: var(--accent-blue); font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;">v0.1.3 Released</span>
           </div>
-          <ul style="list-style: none; color: var(--text-muted); font-size: 0.95rem; line-height: 1.8;">
-            <li style="margin-bottom: 10px;">⚡ <strong>Pure Python Library API:</strong> Run <code>Proxy(port=8080)</code> directly in Python with zero YAML required.</li>
-            <li style="margin-bottom: 10px;">💾 <strong>In-Memory TTL Caching:</strong> Sub-millisecond response caching with automatic POST/PUT cache invalidation.</li>
-            <li style="margin-bottom: 10px;">🛡️ <strong>Token Bucket Rate Limiter:</strong> Protect backends per IP with configurable burst capacity.</li>
-            <li>🪟 <strong>Windows Proactor Stability:</strong> Silent socket disconnect & proactor exception handling.</li>
+          <h3 class="feature-title">Recent Enhancements</h3>
+          <ul style="list-style: none; color: var(--text-muted); font-size: 0.92rem; line-height: 1.8; margin-top: 4px;">
+            <li style="margin-bottom: 10px;"><strong>Pure Python Library API:</strong> Run <code>Proxy(port=8080)</code> directly in Python with zero YAML required.</li>
+            <li style="margin-bottom: 10px;"><strong>In-Memory TTL Caching:</strong> Sub-millisecond response caching with automatic POST/PUT cache invalidation.</li>
+            <li style="margin-bottom: 10px;"><strong>Token Bucket Rate Limiter:</strong> Protect backends per IP with configurable burst capacity.</li>
+            <li><strong>Windows Proactor Stability:</strong> Silent socket disconnect & proactor exception handling.</li>
           </ul>
         </div>
 
         <!-- Right: Upcoming FastAPI Integration -->
-        <div style="background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 36px; box-shadow: var(--shadow-sm);">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-            <span style="background: #fef3c7; color: #92400e; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;">Upcoming Feature</span>
-            <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--text-dark);">FastAPI Centralized Gateway</h3>
+        <div class="feature-card" style="width: 100%;">
+          <svg class="feature-svg-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+            <span style="background: #fef3c7; color: #b45309; font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 20px;">Coming Soon</span>
           </div>
-          <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; margin-bottom: 16px;">
-            We are building <strong>FastAPI / ASGI integration</strong> so PyProxy can act as a centralized microservices gateway service directly within FastAPI applications:
+          <h3 class="feature-title">FastAPI Centralized Gateway</h3>
+          <p class="feature-desc" style="margin-bottom: 16px;">
+            Mount PyProxy as an ASGI middleware or router directly inside <strong>FastAPI / Starlette</strong> to act as an all-in-one centralized microservices gateway service.
           </p>
-          <pre style="background: var(--code-bg); color: #f8fafc; padding: 14px 16px; border-radius: var(--radius-sm); font-family: 'Fira Code', monospace; font-size: 0.8rem; overflow-x: auto;"><code><span style="color: #f472b6;">from</span> fastapi <span style="color: #f472b6;">import</span> FastAPI
+          <div style="background: var(--code-bg); border-radius: var(--radius-sm); padding: 14px 16px; width: 100%; overflow-x: auto;">
+            <pre style="margin: 0; font-family: 'Fira Code', monospace; font-size: 0.8rem; color: #f8fafc;"><code><span style="color: #f472b6;">from</span> fastapi <span style="color: #f472b6;">import</span> FastAPI
 <span style="color: #f472b6;">from</span> pyproxy.asgi <span style="color: #f472b6;">import</span> PyProxyGateway
 
 app = FastAPI(title=<span style="color: #fde047;">"Central Gateway"</span>)
 app.add_middleware(PyProxyGateway, routes=...)</code></pre>
+          </div>
         </div>
 
       </div>
