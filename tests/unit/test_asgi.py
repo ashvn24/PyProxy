@@ -48,12 +48,14 @@ class TestPyProxyGateway:
         gateway.add_route("/users", "https://api.users-service.com")
         gateway.add_route("/payments", "payments.company.org")
 
-        rule1 = gateway.router.routes[0]
+        routes_by_path = {r.path_pattern: r for r in gateway.router.routes}
+
+        rule1 = routes_by_path["/users"]
         assert getattr(rule1, "_target_host") == "api.users-service.com"
         assert getattr(rule1, "_target_port") == 443
         assert getattr(rule1, "_target_ssl") is True
 
-        rule2 = gateway.router.routes[1]
+        rule2 = routes_by_path["/payments"]
         assert getattr(rule2, "_target_host") == "payments.company.org"
         assert getattr(rule2, "_target_port") == 80
         assert getattr(rule2, "_target_ssl") is False

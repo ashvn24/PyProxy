@@ -78,10 +78,16 @@ def cmd_start(args: argparse.Namespace) -> int:
     Returns:
         Exit code.
     """
+    from pyproxy.exceptions.config import ConfigFileNotFoundError
     from pyproxy.proxy_app import Proxy
 
     try:
-        proxy = Proxy(config_path=args.config)
+        config_path = getattr(args, "config", None) or "config.yaml"
+        try:
+            proxy = Proxy(config_path=config_path)
+        except ConfigFileNotFoundError:
+            sys.stderr.write(f"WARNING: Configuration file not found ({config_path}), using default configuration.\n")
+            proxy = Proxy()
         proxy.run()
         return 0
     except Exception as exc:

@@ -23,11 +23,11 @@ def _validate_port(field: str, value: int) -> None:
     Raises:
         ConfigValidationError: If the port is outside 1-65535.
     """
-    if not 1 <= value <= 65535:
+    if not 0 <= value <= 65535:
         raise ConfigValidationError(
             field=field,
             value=value,
-            reason="Port must be between 1 and 65535",
+            reason="Port must be between 0 and 65535",
         )
 
 

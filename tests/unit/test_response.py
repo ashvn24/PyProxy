@@ -60,7 +60,7 @@ class TestHTTPResponseBuilder:
         bytes_sent = await HTTPResponseBuilder.send_response(conn, response)
         assert bytes_sent > 0
         assert b"HTTP/1.1 200 OK\r\n" in conn.written_bytes
-        assert b"Content-Length: 11\r\n" in conn.written_bytes
+        assert b"Content-Length: 13\r\n" in conn.written_bytes
         assert conn.written_bytes.endswith(b"Hello PyProxy")
 
     @pytest.mark.asyncio
