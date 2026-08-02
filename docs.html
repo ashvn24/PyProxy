@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PyProxy Documentation — Features, Configurations & API Reference</title>
-  <meta name="description" content="Complete documentation for PyProxy reverse proxy & load balancer. Detailed guide for all 15 features, YAML/TOML/JSON configs, and Python API code examples.">
+  <meta name="description" content="Complete documentation for PyProxy reverse proxy & load balancer. Detailed guides and code examples for all 15 features using YAML, Python Library API, and CLI options.">
   
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -70,11 +70,6 @@
       font-weight: 800;
       color: var(--text-dark);
       letter-spacing: -0.5px;
-    }
-
-    .logo-svg {
-      width: 34px;
-      height: 34px;
     }
 
     .nav-links {
@@ -192,33 +187,19 @@
       margin-bottom: 24px;
     }
 
-    .feature-box {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 24px;
+    /* Options Multi-Grid Container */
+    .option-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 16px;
       margin-bottom: 24px;
     }
 
-    .feature-box h4 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: var(--text-dark);
-    }
-
-    .feature-box p {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-    }
-
-    /* Code Container */
     .code-block {
       background: var(--code-bg);
       border-radius: var(--radius-md);
       overflow: hidden;
-      margin-bottom: 20px;
     }
 
     .code-header {
@@ -230,10 +211,19 @@
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
       display: flex;
       justify-content: space-between;
+      align-items: center;
+    }
+
+    .code-header span.tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #38bdf8;
     }
 
     .code-body {
-      padding: 20px;
+      padding: 18px 20px;
       font-family: 'Fira Code', monospace;
       font-size: 0.88rem;
       color: #f8fafc;
@@ -320,7 +310,7 @@
         </p>
         
         <div class="code-block">
-          <div class="code-header"><span>Terminal</span><span>pip</span></div>
+          <div class="code-header"><span>Terminal Installation</span><span class="tag">pip</span></div>
           <div class="code-body">
             pip install python-pyproxy
           </div>
@@ -329,81 +319,79 @@
 
       <!-- Section: CLI -->
       <section id="cli" class="doc-section">
-        <h2 class="doc-title">Command Line Interface</h2>
-        <p class="doc-lead">PyProxy includes a full command-line suite for managing your proxy daemon.</p>
+        <h2 class="doc-title">Command Line Interface (CLI)</h2>
+        <p class="doc-lead">PyProxy includes a command-line interface for validating configurations and running reverse proxy daemons.</p>
 
         <div class="code-block">
-          <div class="code-header"><span>CLI Commands</span><span>bash</span></div>
+          <div class="code-header"><span>CLI Suite</span><span class="tag">CLI</span></div>
           <div class="code-body">
 <span class="cm"># Validate a configuration file</span>
 pyproxy validate config.yaml
 
-<span class="cm"># Start the proxy server</span>
+<span class="cm"># Start the reverse proxy daemon</span>
 pyproxy start config.yaml
 
-<span class="cm"># Print version</span>
+<span class="cm"># Display PyProxy version</span>
 pyproxy version
           </div>
         </div>
       </section>
 
-      <!-- Section 1: Server -->
+      <!-- Section 1: Server Engine -->
       <section id="server" class="doc-section">
         <h2 class="doc-title">1. Asyncio TCP Server Engine</h2>
-        <p class="doc-lead">High-performance non-blocking socket listener with TCP_NODELAY and graceful connection draining.</p>
+        <p class="doc-lead">Non-blocking TCP socket server with persistent connection handling, TCP_NODELAY, and configurable timeouts.</p>
 
-        <div class="feature-box">
-          <h4>Server Configuration Example</h4>
-          <p>Controls TCP socket bindings, timeouts, maximum connection limits, and graceful shutdown thresholds.</p>
-          
+        <div class="option-grid">
           <div class="code-block">
-            <div class="code-header"><span>config.yaml</span><span>YAML</span></div>
+            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
             <div class="code-body">
 <span class="kw">server</span>:
   <span class="str">bind_host</span>: "0.0.0.0"
   <span class="str">bind_port</span>: 8080
-  <span class="str">backlog</span>: 1024
+  <span class="str">max_connections</span>: 5000
   <span class="str">keepalive_timeout</span>: 75.0
   <span class="str">read_timeout</span>: 30.0
-  <span class="str">write_timeout</span>: 30.0
-  <span class="str">max_connections</span>: 5000
-  <span class="str">shutdown_timeout</span>: 30.0
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
+            <div class="code-body">
+<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+
+proxy = Proxy(
+    host=<span class="str">"0.0.0.0"</span>,
+    port=8080,
+    config={
+        <span class="str">"server"</span>: {
+            <span class="str">"max_connections"</span>: 5000,
+            <span class="str">"keepalive_timeout"</span>: 75.0
+        }
+    }
+)
+proxy.run()
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option C: CLI Daemon Command</span><span class="tag">CLI</span></div>
+            <div class="code-body">
+pyproxy start config.yaml --host 0.0.0.0 --port 8080
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Section 2: Parser -->
-      <section id="parser" class="doc-section">
-        <h2 class="doc-title">2. HTTP Request Parser</h2>
-        <p class="doc-lead">Streamed parsing of HTTP/1.1 methods, headers, cookies, query strings, and chunked request bodies.</p>
-        
-        <div class="code-block">
-          <div class="code-header"><span>Python API</span><span>Python</span></div>
-          <div class="code-body">
-<span class="kw">from</span> pyproxy.protocol <span class="kw">import</span> HTTPParser
-
-<span class="cm"># Parse incoming request stream from Connection</span>
-request = <span class="kw">await</span> HTTPParser.parse_request(connection)
-print(request.method, request.path, request.headers.get(<span class="str">"Host"</span>))
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 3: Response -->
-      <section id="response" class="doc-section">
-        <h2 class="doc-title">3. Response Builder Engine</h2>
-        <p class="doc-lead">Serializes status codes, headers, and streams chunked or byte-buffered responses with Range support.</p>
-      </section>
-
-      <!-- Section 4: Routing -->
+      <!-- Section 4: Routing Engine -->
       <section id="routing" class="doc-section">
         <h2 class="doc-title">4. Routing Engine</h2>
-        <p class="doc-lead">Supports Longest-Prefix, Exact, Regular Expression, Host Wildcard, and Method-based route matching.</p>
-        
-        <div class="code-block">
-          <div class="code-header"><span>config.yaml — Routing Rules</span><span>YAML</span></div>
-          <div class="code-body">
+        <p class="doc-lead">Supports prefix matching, path stripping, HTTP method filtering, and dynamic route registration.</p>
+
+        <div class="option-grid">
+          <div class="code-block">
+            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
+            <div class="code-body">
 <span class="kw">routes</span>:
   - <span class="str">path</span>: "/api/v1"
     <span class="str">strip_prefix</span>: true
@@ -411,114 +399,206 @@ print(request.method, request.path, request.headers.get(<span class="str">"Host"
     <span class="str">upstream</span>:
       <span class="str">targets</span>:
         - <span class="str">host</span>: "127.0.0.1"
-          <span class="str">port</span>: 3000
-  - <span class="str">path</span>: "/"
-    <span class="str">upstream</span>:
-      <span class="str">targets</span>:
-        - <span class="str">host</span>: "127.0.0.1"
-          <span class="str">port</span>: 8000
+          <span class="str">port</span>: 8001
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
+            <div class="code-body">
+<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+
+proxy = Proxy(port=8080)
+proxy.add_route(
+    path=<span class="str">"/api/v1"</span>,
+    targets=[(<span class="str">"127.0.0.1"</span>, 8001)],
+    methods=[<span class="str">"GET"</span>, <span class="str">"POST"</span>],
+    strip_prefix=True
+)
+proxy.run()
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option C: CLI Verification</span><span class="tag">CLI</span></div>
+            <div class="code-body">
+pyproxy validate config.yaml
+            </div>
           </div>
         </div>
-      </section>
-
-      <!-- Section 5: Proxy -->
-      <section id="proxy" class="doc-section">
-        <h2 class="doc-title">5. Reverse Proxy Engine</h2>
-        <p class="doc-lead">Header manipulation (X-Forwarded-For, X-Real-IP, Forwarded RFC 7239), host rewriting, and response streaming.</p>
-      </section>
-
-      <!-- Section 6: Upstream -->
-      <section id="upstream" class="doc-section">
-        <h2 class="doc-title">6. Upstream Connection Pool</h2>
-        <p class="doc-lead">Maintains reusable persistent idle connection queues to backend targets with automatic retry policies.</p>
       </section>
 
       <!-- Section 7: Load Balancer -->
       <section id="loadbalancer" class="doc-section">
         <h2 class="doc-title">7. Load Balancer</h2>
         <p class="doc-lead">5 Algorithms: Round Robin, Smooth Weighted Round Robin, Least Connections, IP Hash, and Sticky Sessions.</p>
+
+        <div class="option-grid">
+          <div class="code-block">
+            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
+            <div class="code-body">
+<span class="kw">routes</span>:
+  - <span class="str">path</span>: "/service"
+    <span class="str">upstream</span>:
+      <span class="str">algorithm</span>: "least_connections"
+      <span class="str">targets</span>:
+        - <span class="str">host</span>: "10.0.0.1"
+          <span class="str">port</span>: 8001
+          <span class="str">weight</span>: 3
+        - <span class="str">host</span>: "10.0.0.2"
+          <span class="str">port</span>: 8002
+          <span class="str">weight</span>: 1
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
+            <div class="code-body">
+<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+
+proxy = Proxy(
+    port=8080,
+    config={
+        <span class="str">"routes"</span>: [
+            {
+                <span class="str">"path"</span>: <span class="str">"/service"</span>,
+                <span class="str">"upstream"</span>: {
+                    <span class="str">"algorithm"</span>: <span class="str">"least_connections"</span>,
+                    <span class="str">"targets"</span>: [
+                        {<span class="str">"host"</span>: <span class="str">"10.0.0.1"</span>, <span class="str">"port"</span>: 8001, <span class="str">"weight"</span>: 3},
+                        {<span class="str">"host"</span>: <span class="str">"10.0.0.2"</span>, <span class="str">"port"</span>: 8002, <span class="str">"weight"</span>: 1}
+                    ]
+                }
+            }
+        ]
+    }
+)
+proxy.run()
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- Section 8: Health -->
-      <section id="health" class="doc-section">
-        <h2 class="doc-title">8. Health Probes & Circuit Breaker</h2>
-        <p class="doc-lead">Active TCP probes and passive failure tracking with CLOSED, OPEN, and HALF_OPEN circuit state transitions.</p>
-      </section>
-
-      <!-- Section 9: TLS -->
+      <!-- Section 9: TLS Termination -->
       <section id="tls" class="doc-section">
         <h2 class="doc-title">9. HTTPS & TLS Termination</h2>
-        <p class="doc-lead">TLS 1.2/1.3 enforcement, certificate chain loading, SNI matching, and Mutual TLS (mTLS) client verification.</p>
-        
-        <div class="code-block">
-          <div class="code-header"><span>TLS Configuration</span><span>YAML</span></div>
-          <div class="code-body">
+        <p class="doc-lead">TLS 1.2/1.3 encryption, SNI matching, certificate chain loading, and Mutual TLS (mTLS) client verification.</p>
+
+        <div class="option-grid">
+          <div class="code-block">
+            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
+            <div class="code-body">
 <span class="kw">tls</span>:
   <span class="str">enabled</span>: true
   <span class="str">cert_path</span>: "/etc/ssl/certs/server.crt"
   <span class="str">key_path</span>: "/etc/ssl/private/server.key"
   <span class="str">min_version</span>: "1.3"
-  <span class="str">ca_path</span>: "/etc/ssl/certs/client_ca.crt" <span class="cm"># Enables mTLS</span>
+  <span class="str">ca_path</span>: "/etc/ssl/certs/ca.crt" <span class="cm"># Optional mTLS</span>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
+            <div class="code-body">
+<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+
+proxy = Proxy(
+    port=8443,
+    config={
+        <span class="str">"tls"</span>: {
+            <span class="str">"enabled"</span>: True,
+            <span class="str">"cert_path"</span>: <span class="str">"/etc/ssl/certs/server.crt"</span>,
+            <span class="str">"key_path"</span>: <span class="str">"/etc/ssl/private/server.key"</span>,
+            <span class="str">"min_version"</span>: <span class="str">"1.3"</span>
+        }
+    }
+)
+proxy.run()
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Section 10: WebSocket -->
-      <section id="websocket" class="doc-section">
-        <h2 class="doc-title">10. WebSocket Tunneling</h2>
-        <p class="doc-lead">RFC 6455 101 Switching Protocols handshakes and bidirectional async streaming frame tunnels.</p>
-      </section>
-
-      <!-- Section 11: Middleware -->
-      <section id="middleware" class="doc-section">
-        <h2 class="doc-title">11. Middleware Pipeline</h2>
-        <p class="doc-lead">Ordered before-request and after-response hooks for custom transformations and short-circuiting.</p>
-      </section>
-
-      <!-- Section 12: Cache -->
+      <!-- Section 12: Cache System -->
       <section id="cache" class="doc-section">
         <h2 class="doc-title">12. Caching System</h2>
-        <p class="doc-lead">In-memory TTL cache, ETag generation, Cache-Control parsing, 304 Not Modified responses, and automatic cache invalidation on mutating requests (POST, PUT, DELETE).</p>
-        
-        <div class="code-block">
-          <div class="code-header"><span>Cache Configuration</span><span>YAML</span></div>
-          <div class="code-body">
+        <p class="doc-lead">In-memory TTL cache, ETag generation, Cache-Control parsing, 304 responses, and auto-invalidation on POST/PUT/DELETE.</p>
+
+        <div class="option-grid">
+          <div class="code-block">
+            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
+            <div class="code-body">
 <span class="kw">cache</span>:
   <span class="str">enabled</span>: true
   <span class="str">max_size</span>: 1000
   <span class="str">ttl</span>: 60.0 <span class="cm"># In-memory TTL in seconds</span>
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
+            <div class="code-body">
+<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+
+proxy = Proxy(
+    port=8080,
+    config={
+        <span class="str">"cache"</span>: {
+            <span class="str">"enabled"</span>: True,
+            <span class="str">"ttl"</span>: 60.0
+        }
+    }
+)
+proxy.add_route(<span class="str">"/api"</span>, targets=[(<span class="str">"127.0.0.1"</span>, 8001)])
+proxy.run()
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- Section 13: Compression -->
-      <section id="compression" class="doc-section">
-        <h2 class="doc-title">13. Compression Engine</h2>
-        <p class="doc-lead">gzip Content-Encoding negotiation and payload compression with Vary header injection.</p>
-      </section>
-
-      <!-- Section 14: Auth -->
-      <section id="auth" class="doc-section">
-        <h2 class="doc-title">14. Authentication Middleware</h2>
-        <p class="doc-lead">HTTP Basic Auth, API Key header/query validation, and JWT token hooks.</p>
-      </section>
-
-      <!-- Section 15: Security -->
+      <!-- Section 15: Security & Rate Limiting -->
       <section id="security" class="doc-section">
         <h2 class="doc-title">15. Security & Rate Limiting</h2>
-        <p class="doc-lead">Token bucket rate limiting per client IP (HTTP 429), CIDR allowlist/denylist filtering, and CORS preflight handling.</p>
-        
-        <div class="code-block">
-          <div class="code-header"><span>Security Configuration</span><span>YAML</span></div>
-          <div class="code-body">
+        <p class="doc-lead">Token bucket rate limiting per client IP (HTTP 429), CIDR allowlist/denylist filtering, and CORS preflight headers.</p>
+
+        <div class="option-grid">
+          <div class="code-block">
+            <div class="code-header"><span>Option A: YAML Configuration</span><span class="tag">config.yaml</span></div>
+            <div class="code-body">
 <span class="kw">security</span>:
   <span class="str">rate_limiter</span>:
     <span class="str">enabled</span>: true
-    <span class="str">rate</span>: 10.0 <span class="cm"># 10 requests per second</span>
-    <span class="str">burst</span>: 15  <span class="cm"># Token bucket max capacity</span>
+    <span class="str">rate</span>: 10.0  <span class="cm"># Tokens refilled per second</span>
+    <span class="str">burst</span>: 15   <span class="cm"># Max token bucket capacity</span>
   <span class="str">cors</span>:
     <span class="str">enabled</span>: true
     <span class="str">allow_origins</span>: ["*"]
+            </div>
+          </div>
+
+          <div class="code-block">
+            <div class="code-header"><span>Option B: Python Library API</span><span class="tag">Python</span></div>
+            <div class="code-body">
+<span class="kw">from</span> pyproxy <span class="kw">import</span> Proxy
+
+proxy = Proxy(
+    port=8080,
+    config={
+        <span class="str">"security"</span>: {
+            <span class="str">"rate_limiter"</span>: {
+                <span class="str">"enabled"</span>: True,
+                <span class="str">"rate"</span>: 10.0,
+                <span class="str">"burst"</span>: 15
+            },
+            <span class="str">"cors"</span>: {
+                <span class="str">"enabled"</span>: True,
+                <span class="str">"allow_origins"</span>: [<span class="str">"*"</span>]
+            }
+        }
+    }
+)
+proxy.run()
+            </div>
           </div>
         </div>
       </section>
