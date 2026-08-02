@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 
 from pyproxy.asgi import PyProxyGateway, PyProxyRouter
@@ -174,6 +176,99 @@ class TestPyProxyGateway:
         assert sent_messages[0]["type"] == "http.response.start"
         assert sent_messages[0]["status"] == 404
 
+    @pytest.mark.asyncio
+    async def test_asgi_gateway_full_proxy_flow(self):
+        async def upstream_handler(reader, writer):
+            req_line = await reader.readline()
+            while True:
+                line = await reader.readline()
+                if line in (b"\r\n", b"\n", b""):
+                    break
+            body = b'{"status": "ok"}'
+            resp = (
+                b"HTTP/1.1 200 OK\r\n"
+                b"Content-Type: application/json\r\n"
+                + f"Content-Length: {len(body)}\r\n".encode("latin-1")
+                + b"Connection: close\r\n\r\n"
+                + body
+            )
+            writer.write(resp)
+            await writer.drain()
+            writer.close()
+            await writer.wait_closed()
+
+        upstream_server = await asyncio.start_server(upstream_handler, host="127.0.0.1", port=0)
+        up_host, up_port = upstream_server.sockets[0].getsockname()
+
+        gateway = PyProxyGateway(
+            routes=[{"path": "/api", "target": f"http://{up_host}:{up_port}"}]
+        )
+
+        sent_messages = []
+
+        async def dummy_send(msg):
+            sent_messages.append(msg)
+
+        async def dummy_receive():
+            return {"type": "http.request", "body": b"ping", "more_body": False}
+
+        scope = {
+            "type": "http",
+            "method": "POST",
+            "path": "/api/test",
+            "query_string": b"param=1",
+            "headers": [(b"user-agent", b"PytestASGI"), (b"content-length", b"4")],
+            "client": ("127.0.0.1", 54321),
+        }
+
+        await gateway(scope, dummy_receive, dummy_send)
+
+        assert len(sent_messages) >= 2
+        assert sent_messages[0]["type"] == "http.response.start"
+        assert sent_messages[0]["status"] == 200
+
+        body_parts = [m["body"] for m in sent_messages if m.get("type") == "http.response.body"]
+        full_body = b"".join(body_parts)
+        assert b'{"status": "ok"}' in full_body
+
+        upstream_server.close()
+        await upstream_server.wait_closed()
+
+    @pytest.mark.asyncio
+    async def test_asgi_gateway_upstream_unreachable_502(self):
+        gateway = PyProxyGateway(
+            routes=[{"path": "/api", "target": "http://127.0.0.1:59999"}],
+            timeout=1.0,
+        )
+
+        sent_messages = []
+
+        async def dummy_send(msg):
+            sent_messages.append(msg)
+
+        async def dummy_receive():
+            return {"type": "http.request", "body": b"", "more_body": False}
+
+        scope = {
+            "type": "http",
+            "method": "GET",
+            "path": "/api/fail",
+            "headers": [],
+        }
+
+        await gateway(scope, dummy_receive, dummy_send)
+        assert len(sent_messages) == 2
+        assert sent_messages[0]["type"] == "http.response.start"
+        assert sent_messages[0]["status"] == 502
+
+    def test_init_cors_and_auth_dict(self):
+        gateway = PyProxyGateway(
+            cors={"allow_origins": ("*",)},
+            auth={"valid_api_keys": {"my-key"}},
+            enable_caching=True,
+        )
+        assert len(gateway.middleware_pipeline._middlewares) == 3
+
 
 class TestPyProxyRouter:
     """Tests for PyProxyRouter helper."""
@@ -184,3 +279,4 @@ class TestPyProxyRouter:
         assert len(router.gateway.router.routes) == 1
         rule = router.gateway.router.routes[0]
         assert getattr(rule, "_target_host") == "orders-service"
+
