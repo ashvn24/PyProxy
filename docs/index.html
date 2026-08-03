@@ -725,10 +725,10 @@
         flex-direction: column;
         align-items: stretch;
         gap: 0;
-        padding: 12px 20px;
+        padding: 14px 20px 22px;
         display: none;
-        box-shadow: var(--shadow-md);
-        z-index: 101;
+        box-shadow: 0 20px 35px rgba(15, 23, 42, 0.16);
+        z-index: 200;
       }
       .nav-links.active {
         display: flex;
@@ -743,8 +743,11 @@
       }
       .nav-links li:last-child a {
         border-bottom: none;
-        margin-top: 8px;
+        margin-top: 12px;
+        margin-bottom: 4px;
         text-align: center;
+        display: flex;
+        align-items: center;
         justify-content: center;
       }
       .hero {

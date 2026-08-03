@@ -442,17 +442,17 @@
       .nav-links {
         position: absolute;
         top: 100%;
-        left: -20px;
-        right: -20px;
+        left: 0;
+        right: 0;
         background: #ffffff;
         border-bottom: 1px solid var(--border-color);
         flex-direction: column;
         align-items: stretch;
         gap: 0;
-        padding: 12px 20px;
+        padding: 14px 20px 22px;
         display: none;
-        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
-        z-index: 101;
+        box-shadow: 0 20px 35px rgba(15, 23, 42, 0.16);
+        z-index: 200;
       }
 
       .nav-links.active {
@@ -465,14 +465,18 @@
 
       .nav-links a {
         display: block;
-        padding: 10px 0;
+        padding: 12px 0;
         border-bottom: 1px solid var(--border-color);
       }
 
       .nav-links li:last-child a {
         border-bottom: none;
-        margin-top: 8px;
+        margin-top: 12px;
+        margin-bottom: 4px;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       aside.sidebar {
@@ -583,7 +587,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#features">Features</a></li>
         <li><a href="#server">Docs</a></li>
-        <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI (v0.2.0)</a></li>
+        <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI (v0.2.1)</a></li>
         <li><a href="https://github.com/ashvn24/PyProxy" target="_blank" class="btn-gh">GitHub</a></li>
       </ul>
     </div>
@@ -610,7 +614,7 @@
           <div class="sidebar-title">Getting Started</div>
           <ul class="sidebar-menu">
             <li><a href="#overview">Overview & Installation</a></li>
-            <li><a href="#fastapi-quickstart">FastAPI Gateway Quickstart (v0.2.0)</a></li>
+            <li><a href="#fastapi-quickstart">FastAPI Gateway Quickstart (v0.2.1)</a></li>
             <li><a href="#cli">CLI Commands</a></li>
           </ul>
         </div>
@@ -645,7 +649,7 @@
       
       <!-- Section: Overview -->
       <section id="overview" class="doc-section">
-        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.2.0</span></h1>
+        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.2.1</span></h1>
         <p class="doc-lead">
           PyProxy (published as <strong>python-pyproxy</strong> on PyPI) is a high-performance reverse proxy and load balancer built entirely from scratch in Python on <code>asyncio</code>.
         </p>
@@ -662,7 +666,7 @@
 
       <!-- Section: FastAPI Quickstart (First Visible) -->
       <section id="fastapi-quickstart" class="doc-section">
-        <h2 class="doc-title">FastAPI Gateway Quickstart <span class="doc-badge">v0.2.0</span></h2>
+        <h2 class="doc-title">FastAPI Gateway Quickstart <span class="doc-badge">v0.2.1</span></h2>
         <p class="doc-lead">Mount PyProxy directly inside your FastAPI or Starlette application to act as a centralized microservice gateway with built-in JWT/Auth, rate limiting, and response caching.</p>
 
         <div class="code-card">
@@ -692,7 +696,7 @@ app.add_middleware(
 
 <span class="kw">@app.get</span>(<span class="str">"/health"</span>)
 <span class="kw">def</span> <span class="fn">health_check</span>():
-    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"healthy"</span>, <span class="str">"gateway"</span>: <span class="str">"PyProxy v0.2.0"</span>}</code></pre>
+    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"healthy"</span>, <span class="str">"gateway"</span>: <span class="str">"PyProxy v0.2.1"</span>}</code></pre>
           </div>
 
           <div id="fastapi-router-tab" class="code-tab-content">
@@ -1060,7 +1064,7 @@ app.add_middleware(
 
       <!-- Section 17: FastAPI Gateway Plugins -->
       <section id="fastapi-plugins" class="doc-section">
-        <h2 class="doc-title">17. FastAPI & ASGI Gateway Plugins <span class="doc-badge">v0.2.0</span></h2>
+        <h2 class="doc-title">17. FastAPI & ASGI Gateway Plugins <span class="doc-badge">v0.2.1</span></h2>
         <p class="doc-lead">Complete guide for mounting PyProxy as a FastAPI gateway with built-in and custom plugins (JWT, Auth, Rate Limiting, Caching, CORS, and Audit Hooks).</p>
 
         <!-- Plugin 1: JWT & Custom Auth Plugin -->
@@ -1211,7 +1215,7 @@ app.add_middleware(
         <span class="kw">return</span> request
 
     <span class="kw">async def</span> <span class="fn">process_response</span>(self, request: HTTPRequest, response: HTTPResponse) -> HTTPResponse:
-        response.headers.set(<span class="str">"X-Gateway-Engine"</span>, <span class="str">"PyProxy-v0.2.0"</span>)
+        response.headers.set(<span class="str">"X-Gateway-Engine"</span>, <span class="str">"PyProxy-v0.2.1"</span>)
         <span class="kw">return</span> response
 
 app = FastAPI()
@@ -1245,7 +1249,7 @@ app.add_middleware(
           </p>
           <div class="footer-status">
             <span class="status-dot"></span>
-            PyPI v0.2.0 Production/Stable
+            PyPI v0.2.1 Production/Stable
           </div>
         </div>
 
