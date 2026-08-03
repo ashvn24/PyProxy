@@ -1206,7 +1206,7 @@
     <div class="container">
       <div style="text-align: center; max-width: 760px; margin: 0 auto 50px;">
         <h2 style="font-size: 2.4rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px;">Roadmap & Centralized FastAPI Service</h2>
-        <p style="color: var(--text-muted); font-size: 1.05rem;">Discover recent v0.1.3 features and preview upcoming support for FastAPI acting as a centralized reverse proxy service.</p>
+        <p style="color: var(--text-muted); font-size: 1.05rem;">Discover core PyProxy features and native FastAPI integration acting as a centralized reverse proxy gateway service.</p>
       </div>
 
       <div class="roadmap-grid">
@@ -1318,8 +1318,8 @@ app = FastAPI(title=<span style="color: #fde047;">"Centralized Proxy Gateway"</s
 app.add_middleware(
     PyProxyGateway,
     routes=[
-        {<span style="color: #fde047;">"path"</span>: <span style="color: #fde047;">"/users"</span>, <span style="color: #fde047;">"target"</span>: <span style="color: #fde047;">"http://127.0.0.1:8001"</span>},
-        {<span style="color: #fde047;">"path"</span>: <span style="color: #fde047;">"/orders"</span>, <span style="color: #fde047;">"target"</span>: <span style="color: #fde047;">"http://127.0.0.1:8002"</span>},
+        {<span style="color: #fde047;">"path"</span>: <span class="str">"/users"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8001"</span>},
+        {<span style="color: #fde047;">"path"</span>: <span class="str">"/orders"</span>, <span class="str">"target"</span>: <span class="str">"http://127.0.0.1:8002"</span>},
     ],
     enable_caching=True,
     rate_limit=100

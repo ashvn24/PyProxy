@@ -1018,10 +1018,10 @@ proxy.run()</code></pre>
       <!-- Section 16: Roadmap & Centralized FastAPI Gateway -->
       <section id="roadmap" class="doc-section">
         <h2 class="doc-title">16. Roadmap & Centralized FastAPI Gateway</h2>
-        <p class="doc-lead">Overview of newly added v0.1.3 capabilities and upcoming support for FastAPI acting as a centralized reverse proxy service.</p>
+        <p class="doc-lead">Overview of v0.1.3 core features and v0.2.1 release of FastAPI acting as a centralized reverse proxy gateway service.</p>
 
         <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 28px; margin-bottom: 24px;">
-          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px;">v0.1.3 Highlights (Available Now)</h4>
+          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px;">v0.1.3 Highlights</h4>
           <ul style="list-style: square; padding-left: 20px; color: var(--text-muted); line-height: 1.8;">
             <li><strong>Programmatic Python Library API:</strong> Run <code>Proxy(port=8080)</code>, pass raw python dict configs, and register dynamic routes with <code>proxy.add_route("/path", targets=[...])</code>.</li>
             <li><strong>In-Memory Response Caching:</strong> Sub-millisecond cache delivery with automatic POST/PUT cache invalidation.</li>
@@ -1031,13 +1031,13 @@ proxy.run()</code></pre>
         </div>
 
         <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 28px;">
-          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; color: #b45309;">Coming Soon: Centralized FastAPI Service Integration</h4>
+          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; color: #15803d;">🚀 Released &amp; Live: Centralized FastAPI Gateway Integration (v0.2.1)</h4>
           <p style="color: var(--text-muted); margin-bottom: 16px;">
-            PyProxy will offer a native ASGI middleware layer so it can be mounted directly into any <strong>FastAPI / Starlette</strong> application as an all-in-one centralized API Gateway service:
+            PyProxy provides a native ASGI middleware layer (<code>PyProxyGateway</code>) so it can be mounted directly into any <strong>FastAPI / Starlette</strong> application as an all-in-one centralized API Gateway service:
           </p>
           <div class="code-card" style="margin: 0;">
             <div class="code-tabs-header">
-              <button class="code-tab-btn active">FastAPI ASGI Integration Preview</button>
+              <button class="code-tab-btn active">FastAPI ASGI Gateway Integration (v0.2.1)</button>
             </div>
             <div class="code-tab-content active">
 <pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
@@ -1090,7 +1090,7 @@ app.add_middleware(
     <span class="kw">async def</span> <span class="fn">process_request</span>(self, request: HTTPRequest) -> HTTPRequest | HTTPResponse | None:
         token = request.headers.get(<span class="str">"Authorization"</span>, <span class="str">""</span>).replace(<span class="str">"Bearer "</span>, <span class="str">""</span>)
         <span class="kw">if not</span> token <span class="kw">or</span> token != <span class="str">"secret-jwt-token"</span>:
-            <span class="kw">return</span> HTTPResponse.create_error(401, <span class="str">"Invalid or expired JWT token"</span>)
+            <span class="kw">return</span> HTTPResponse.create-error(401, <span class="str">"Invalid or expired JWT token"</span>)
         <span class="kw">return None</span>
 
 app = FastAPI()
