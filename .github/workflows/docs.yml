@@ -30,6 +30,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Sync Root HTML to Docs Directory
+        run: |
+          cp index.html docs/index.html
+          cp docs.html docs/docs.html
+          sed -i 's|src="docs/logo/|src="logo/|g' docs/index.html
+          sed -i 's|src="docs/logo/|src="logo/|g' docs/docs.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
