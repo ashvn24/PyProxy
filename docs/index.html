@@ -759,16 +759,19 @@
         margin-bottom: 24px;
       }
       .hero-terminal {
-        height: auto;
-        min-height: 200px;
+        height: 220px;
+        flex-shrink: 0;
         max-width: 100%;
         transform: none !important;
         margin-bottom: 24px;
+        overflow: hidden;
       }
       .terminal-code {
-        padding: 16px;
-        font-size: 0.8rem;
+        padding: 14px 16px;
+        font-size: 0.78rem;
+        line-height: 1.5;
         overflow-x: auto;
+        overflow-y: hidden;
       }
       .btn-dark {
         width: 100%;
@@ -833,6 +836,14 @@
       }
       .hero-title {
         font-size: 1.75rem;
+      }
+      .hero-terminal {
+        height: 210px;
+      }
+      .terminal-code {
+        padding: 12px 14px;
+        font-size: 0.74rem;
+        line-height: 1.45;
       }
     }
 
@@ -1121,7 +1132,7 @@
     </div>
   </section>
 
-  <!-- Feature Cards Section (Clean White Cards, No Grid Lines Pattern) -->
+  <!-- Feature Cards Section (Clean White Cards, No Background Grids) -->
   <section id="features">
     <div class="container">
       
