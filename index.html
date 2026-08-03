@@ -688,11 +688,29 @@
     }
 
     @media (max-width: 768px) {
+      .announcement-banner {
+        padding: 6px 0;
+        font-size: 0.78rem;
+      }
+      .announcement-inner {
+        gap: 6px 10px;
+      }
+      .banner-badge {
+        font-size: 0.68rem;
+        padding: 2px 8px;
+      }
+      .banner-text {
+        font-size: 0.78rem;
+      }
+      .banner-link {
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
       .container {
-        padding: 0 20px;
+        padding: 0 16px;
       }
       .nav-inner {
-        height: 68px;
+        height: 64px;
       }
       .mobile-toggle {
         display: inline-flex;
@@ -700,8 +718,8 @@
       .nav-links {
         position: absolute;
         top: 100%;
-        left: -20px;
-        right: -20px;
+        left: 0;
+        right: 0;
         background: #ffffff;
         border-bottom: 1px solid var(--border-color);
         flex-direction: column;
@@ -730,7 +748,7 @@
         justify-content: center;
       }
       .hero {
-        padding: 40px 0 60px;
+        padding: 30px 0 50px;
       }
       .hero-title {
         font-size: 2.1rem;
@@ -741,6 +759,8 @@
         margin-bottom: 24px;
       }
       .hero-terminal {
+        height: auto;
+        min-height: 200px;
         max-width: 100%;
         transform: none !important;
         margin-bottom: 24px;
@@ -767,10 +787,10 @@
         height: 200px;
       }
       section {
-        padding: 60px 0;
+        padding: 50px 0;
       }
       .feature-card {
-        padding: 28px 20px;
+        padding: 24px 20px;
       }
       .feature-svg-icon {
         width: 40px;
@@ -802,8 +822,14 @@
     }
 
     @media (max-width: 480px) {
+      .announcement-banner {
+        padding: 6px 0;
+      }
+      .announcement-inner {
+        gap: 4px 6px;
+      }
       .container {
-        padding: 0 16px;
+        padding: 0 14px;
       }
       .hero-title {
         font-size: 1.75rem;
@@ -814,8 +840,8 @@
     .announcement-banner {
       background: var(--primary-dark);
       color: #ffffff;
-      padding: 10px 0;
-      font-size: 0.88rem;
+      padding: 8px 0;
+      font-size: 0.85rem;
       border-bottom: 1px solid var(--border-color);
       position: relative;
       z-index: 102;
@@ -825,7 +851,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 14px;
+      gap: 10px;
       flex-wrap: wrap;
       text-align: center;
     }
@@ -833,18 +859,20 @@
     .banner-badge {
       background: var(--accent-blue);
       color: #ffffff;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      padding: 3px 12px;
+      padding: 3px 10px;
       border-radius: 20px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      white-space: nowrap;
     }
 
     .banner-text {
       font-weight: 600;
       color: #f8fafc;
+      line-height: 1.4;
     }
 
     .countdown-mini {
@@ -980,13 +1008,13 @@
   <div class="announcement-banner">
     <div class="container announcement-inner">
       <span class="banner-badge">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-1.8a4 4 0 003.54-4.8 6 6 0 012.3-.78zM19.36 9.87a6 6 0 00-7.38-5.84v1.8a4 4 0 003.54 6 6 0 002.58.5zM13 10V3L4 14h7v7l9-11h-7z"/>
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
         </svg>
-        LATEST RELEASE v0.2.1 LIVE
+        v0.2.1 LIVE
       </span>
-      <span class="banner-text">PyProxy v0.2.1 is officially released! Features FastAPI Gateway Integration & Plugin Support.</span>
-      <a href="docs.html#fastapi-quickstart" class="banner-link">View Documentation & Quickstart →</a>
+      <span class="banner-text">FastAPI Gateway Integration &amp; Plugin Support is live!</span>
+      <a href="docs.html#fastapi-quickstart" class="banner-link">Docs &amp; Quickstart →</a>
     </div>
   </div>
 
