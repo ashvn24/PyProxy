@@ -301,6 +301,15 @@ class PyProxyGateway:
             await self._send_http_response(middleware_result, send)
             return
 
+        if isinstance(middleware_result, HTTPRequest):
+            http_request = middleware_result
+            if http_request.body:
+                request_body = http_request.body
+
+        for h_k, h_v in http_request.headers.items():
+            if h_k.lower() != "host":
+                headers_dict[h_k.lower()] = h_v
+
         headers_dict["host"] = f"{target_host}:{target_port}" if target_port not in (80, 443) else target_host
         headers_dict["x-forwarded-for"] = client_ip
         headers_dict["x-forwarded-proto"] = scope.get("scheme", "http")
