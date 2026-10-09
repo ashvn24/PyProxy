@@ -587,7 +587,7 @@
         <li><a href="index.html">Home</a></li>
         <li><a href="index.html#features">Features</a></li>
         <li><a href="#server">Docs</a></li>
-        <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI (v0.2.1)</a></li>
+        <li><a href="https://pypi.org/project/python-pyproxy/" target="_blank">PyPI (v0.2.2)</a></li>
         <li><a href="https://github.com/ashvn24/PyProxy" target="_blank" class="btn-gh">GitHub</a></li>
       </ul>
     </div>
@@ -614,7 +614,7 @@
           <div class="sidebar-title">Getting Started</div>
           <ul class="sidebar-menu">
             <li><a href="#overview">Overview & Installation</a></li>
-            <li><a href="#fastapi-quickstart">FastAPI Gateway Quickstart (v0.2.1)</a></li>
+            <li><a href="#fastapi-quickstart">FastAPI Gateway Quickstart (v0.2.2)</a></li>
             <li><a href="#cli">CLI Commands</a></li>
           </ul>
         </div>
@@ -649,7 +649,7 @@
       
       <!-- Section: Overview -->
       <section id="overview" class="doc-section">
-        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.2.1</span></h1>
+        <h1 class="doc-title">PyProxy Documentation <span class="doc-badge">v0.2.2</span></h1>
         <p class="doc-lead">
           PyProxy (published as <strong>python-pyproxy</strong> on PyPI) is a high-performance reverse proxy and load balancer built entirely from scratch in Python on <code>asyncio</code>.
         </p>
@@ -666,7 +666,7 @@
 
       <!-- Section: FastAPI Quickstart (First Visible) -->
       <section id="fastapi-quickstart" class="doc-section">
-        <h2 class="doc-title">FastAPI Gateway Quickstart <span class="doc-badge">v0.2.1</span></h2>
+        <h2 class="doc-title">FastAPI Gateway Quickstart <span class="doc-badge">v0.2.2</span></h2>
         <p class="doc-lead">Mount PyProxy directly inside your FastAPI or Starlette application to act as a centralized microservice gateway with built-in JWT/Auth, rate limiting, and response caching.</p>
 
         <div class="code-card">
@@ -696,7 +696,7 @@ app.add_middleware(
 
 <span class="kw">@app.get</span>(<span class="str">"/health"</span>)
 <span class="kw">def</span> <span class="fn">health_check</span>():
-    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"healthy"</span>, <span class="str">"gateway"</span>: <span class="str">"PyProxy v0.2.0"</span>}</code></pre>
+    <span class="kw">return</span> {<span class="str">"status"</span>: <span class="str">"healthy"</span>, <span class="str">"gateway"</span>: <span class="str">"PyProxy v0.2.2"</span>}</code></pre>
           </div>
 
           <div id="fastapi-router-tab" class="code-tab-content">
@@ -1016,7 +1016,7 @@ proxy.run()</code></pre>
       </section>
       <section id="roadmap" class="doc-section">
         <h2 class="doc-title">16. Roadmap & Centralized FastAPI Gateway</h2>
-        <p class="doc-lead">Overview of v0.1.3 core features and v0.2.1 release of FastAPI acting as a centralized reverse proxy gateway service.</p>
+        <p class="doc-lead">Overview of v0.1.3 core features and v0.2.2 release of FastAPI acting as a centralized reverse proxy gateway service.</p>
 
         <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 28px; margin-bottom: 24px;">
           <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px;">v0.1.3 Highlights</h4>
@@ -1029,13 +1029,13 @@ proxy.run()</code></pre>
         </div>
 
         <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 28px;">
-          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; color: #15803d;">🚀 Released &amp; Live: Centralized FastAPI Gateway Integration (v0.2.1)</h4>
+          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 12px; color: #15803d;">🚀 Released &amp; Live: Centralized FastAPI Gateway Integration (v0.2.2)</h4>
           <p style="color: var(--text-muted); margin-bottom: 16px;">
             PyProxy provides a native ASGI middleware layer (<code>PyProxyGateway</code>) so it can be mounted directly into any <strong>FastAPI / Starlette</strong> application as an all-in-one centralized API Gateway service:
           </p>
           <div class="code-card" style="margin: 0;">
             <div class="code-tabs-header">
-              <button class="code-tab-btn active">FastAPI ASGI Gateway Integration (v0.2.1)</button>
+              <button class="code-tab-btn active">FastAPI ASGI Gateway Integration (v0.2.2)</button>
             </div>
             <div class="code-tab-content active">
 <pre><code><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
@@ -1062,7 +1062,7 @@ app.add_middleware(
 
       <!-- Section 17: FastAPI Gateway Plugins -->
       <section id="fastapi-plugins" class="doc-section">
-        <h2 class="doc-title">17. FastAPI & ASGI Gateway Plugins <span class="doc-badge">v0.2.0</span></h2>
+        <h2 class="doc-title">17. FastAPI & ASGI Gateway Plugins <span class="doc-badge">v0.2.2</span></h2>
         <p class="doc-lead">Complete guide for mounting PyProxy as a FastAPI gateway with built-in and custom plugins (JWT, Auth, Rate Limiting, Caching, CORS, and Audit Hooks).</p>
 
         <!-- Plugin 1: JWT & Custom Auth Plugin -->
@@ -1213,7 +1213,7 @@ app.add_middleware(
         <span class="kw">return</span> request
 
     <span class="kw">async def</span> <span class="fn">process_response</span>(self, request: HTTPRequest, response: HTTPResponse) -> HTTPResponse:
-        response.headers.set(<span class="str">"X-Gateway-Engine"</span>, <span class="str">"PyProxy-v0.2.0"</span>)
+        response.headers.set(<span class="str">"X-Gateway-Engine"</span>, <span class="str">"PyProxy-v0.2.2"</span>)
         <span class="kw">return</span> response
 
 app = FastAPI()
@@ -1223,6 +1223,11 @@ app.add_middleware(
     middlewares=[CorrelationIDPlugin()]
 )</code></pre>
             </div>
+          </div>
+          <div style="margin-top: 16px; padding: 12px 16px; background: rgba(59, 130, 246, 0.08); border-left: 3px solid var(--accent-blue); border-radius: 4px;">
+            <p style="color: var(--text-dark); font-size: 0.9rem; margin: 0;">
+              <strong>🚀 Upstream Request Synchronization (v0.2.2):</strong> Any headers (e.g., <code>X-User-Id</code>, tenant tokens, correlation IDs) or body modifications made to <code>request</code> in <code>process_request()</code> are automatically synchronized and dispatched upstream to target microservices by <code>PyProxyGateway</code>.
+            </p>
           </div>
         </div>
 

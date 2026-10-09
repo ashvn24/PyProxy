@@ -37,7 +37,7 @@ ground up — no frameworks, no shortcuts.
 pip install python-pyproxy
 ```
 
-### FastAPI / ASGI Gateway Integration (v0.2.0)
+### FastAPI / ASGI Gateway Integration (v0.2.2)
 
 Mount PyProxy as a centralized microservice gateway directly inside FastAPI or Starlette with full plugin support (Auth, JWT, Rate Limiting, Caching):
 
@@ -62,7 +62,7 @@ app.add_middleware(
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy", "gateway": "PyProxy v0.2.0"}
+    return {"status": "healthy", "gateway": "PyProxy v0.2.2"}
 ```
 
 ### YAML / CLI Proxy Server Quick Start
@@ -136,7 +136,7 @@ app.add_middleware(
 | **API Keys & Basic Auth** | Service-to-service auth or developer API endpoints. | Pass `auth=AuthMiddleware(valid_api_keys={...})` into `PyProxyGateway`. |
 | **Rate Limiting** | Prevent API abuse and DDoS attacks per client IP. | Set `rate_limit=60` (requests per minute per IP) in `PyProxyGateway`. |
 | **In-Memory Caching** | Deliver sub-millisecond responses for read-heavy GET routes. | Set `enable_caching=True` in `PyProxyGateway`. |
-| **Audit & Header Hooks** | Inject correlation IDs (`X-Correlation-ID`) or response signatures. | Subclass `BaseMiddleware`, override `process_request()` / `process_response()`. |
+| **Audit & Header Hooks** | Inject correlation IDs (`X-Correlation-ID`), tenant IDs, or mutate request headers/body upstream. | Subclass `BaseMiddleware`, override `process_request()` / `process_response()`. In v0.2.2+, modified headers & body automatically sync upstream. |
 
 ## Configuration
 
